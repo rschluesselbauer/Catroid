@@ -112,7 +112,8 @@ public class ChangeVariableBrick extends UserVariableBrick {
 
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_DOWN && ((Spinner) view).getSelectedItemPosition() == 0
+				if (event.getAction() == MotionEvent.ACTION_DOWN
+						&& ((Spinner) view).getSelectedItemPosition() == 0
 						&& ((Spinner) view).getAdapter().getCount() == 1) {
 					NewDataDialog dialog = new NewDataDialog((Spinner) view, NewDataDialog.DialogType.USER_VARIABLE);
 					dialog.addVariableDialogListener(ChangeVariableBrick.this);

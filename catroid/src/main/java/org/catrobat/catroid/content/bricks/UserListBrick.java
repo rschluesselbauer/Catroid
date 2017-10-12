@@ -56,11 +56,11 @@ public abstract class UserListBrick extends FormulaBrick implements NewDataDialo
 
 		updateUserListIfDeleted(userListAdapterWrapper);
 
-		if (userList != null) {
-			userListSpinner.setSelection(userListAdapterWrapper.getPositionOfItem(userList), true);
-		} else if (newUserList != null) {
+		if (newUserList != null) {
 			userListSpinner.setSelection(userListAdapterWrapper.getPositionOfItem(newUserList), true);
 			userList = newUserList;
+		} else if (userList != null) {
+			userListSpinner.setSelection(userListAdapterWrapper.getPositionOfItem(userList), true);
 		} else {
 			userListSpinner.setSelection(userListAdapterWrapper.getCount() - 1, true);
 			userList = userListAdapterWrapper.getItem(userListAdapterWrapper.getCount() - 1);

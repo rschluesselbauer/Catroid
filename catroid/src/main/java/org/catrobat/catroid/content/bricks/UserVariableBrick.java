@@ -56,12 +56,11 @@ public abstract class UserVariableBrick extends FormulaBrick implements NewDataD
 				.getAdapter();
 
 		updateUserVariableIfDeleted(userVariableAdapterWrapper);
-
-		if (userVariable != null) {
-			variableSpinner.setSelection(userVariableAdapterWrapper.getPositionOfItem(userVariable), true);
-		} else if (newUserVariable != null) {
+		if (newUserVariable != null) {
 			variableSpinner.setSelection(userVariableAdapterWrapper.getPositionOfItem(newUserVariable), true);
 			userVariable = newUserVariable;
+		} else if (userVariable != null) {
+			variableSpinner.setSelection(userVariableAdapterWrapper.getPositionOfItem(userVariable), true);
 		} else {
 			variableSpinner.setSelection(userVariableAdapterWrapper.getCount() - 1, true);
 			userVariable = userVariableAdapterWrapper.getItem(userVariableAdapterWrapper.getCount() - 1);
