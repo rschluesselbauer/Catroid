@@ -39,22 +39,23 @@ public class BroadcastAction extends Action {
 	@Override
 	public boolean act(float delta) {
 		if (executeOnce) {
+			executeOnce = false;
 			List<Sprite> sprites = ProjectManager.getInstance().getSceneToPlay().getSpriteList();
 			for (Sprite spriteOfList : sprites) {
 				spriteOfList.look.fire(event);
 			}
-			executeOnce = false;
 		}
-		// Clear removed clones we are still waiting for
-		List<Sprite> sprites = ProjectManager.getInstance().getSceneToPlay().getSpriteList();
 		List<Sprite> interrupters = event.getInterrupters();
+		// Clear removed clones we are still waiting for
+		/*List<Sprite> sprites = ProjectManager.getInstance().getSceneToPlay().getSpriteList();
 		for (Iterator<Sprite> iter = interrupters.iterator(); iter.hasNext(); ) {
-			if (!sprites.contains(iter.next())) {
+			Sprite sprite = iter.next();
+			if (sprite.isClone() && !sprites.contains(sprite)) {
 				iter.remove();
 			}
-		}
+		}*/
 
-		if (interrupters.size() == 0) {
+		if (interrupters.size() == 0 && !executeOnce) {
 			return true;
 		}
 		return false;

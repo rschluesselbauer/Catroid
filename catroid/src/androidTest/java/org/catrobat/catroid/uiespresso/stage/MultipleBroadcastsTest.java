@@ -67,7 +67,7 @@ public class MultipleBroadcastsTest {
 
 	@Before
 	public void setUp() throws Exception {
-		BroadcastHandler.clearActionMaps();
+		//BroadcastHandler.clearActionMaps();
 		project = UiTestUtils.createEmptyProject("test");
 		dataContainer = project.getDefaultScene().getDataContainer();
 		userVariables = new ArrayList<>();

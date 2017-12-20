@@ -101,7 +101,7 @@ public class PhysicsCollisionBetweenTest extends PhysicsCollisionBaseTest {
 		assertTrue("getLookData of sprite2 is null", sprite2.look.getLookData() != null);
 
 		CollisionScript secondSpriteCollisionScript = new CollisionScript("");
-		secondSpriteCollisionScript.setAndReturnBroadcastMessage(sprite2.getName(), sprite.getName());
+		secondSpriteCollisionScript.setAndReturnBroadcastMessage(sprite2, sprite);
 		secondSpriteCollisionScript.getScriptBrick();
 		int testXValue = 444;
 		int testYValue = 555;

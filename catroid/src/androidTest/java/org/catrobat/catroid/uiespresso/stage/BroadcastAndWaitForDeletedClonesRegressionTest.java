@@ -60,7 +60,8 @@ public class BroadcastAndWaitForDeletedClonesRegressionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		BroadcastHandler.clearActionMaps();
+		// BC-TODO:
+		//BroadcastHandler.clearActionMaps();
 		createProject();
 	}
 

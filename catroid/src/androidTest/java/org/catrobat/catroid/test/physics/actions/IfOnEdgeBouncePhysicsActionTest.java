@@ -174,8 +174,7 @@ public class IfOnEdgeBouncePhysicsActionTest extends PhysicsBaseTest {
 		assertTrue("getLookData is null", sprite.look.getLookData() != null);
 
 		CollisionScript spriteCollisionScript = new CollisionScript("");
-		spriteCollisionScript.setAndReturnBroadcastMessage(sprite.getName(), PhysicsCollision
-				.COLLISION_WITH_ANYTHING_IDENTIFIER);
+		spriteCollisionScript.setAndReturnBroadcastMessage(sprite, null);
 		spriteCollisionScript.getScriptBrick();
 		int testXValue = 300;
 		int testYValue = 250;
