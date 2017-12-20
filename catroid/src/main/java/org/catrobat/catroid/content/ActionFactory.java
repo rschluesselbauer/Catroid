@@ -32,7 +32,6 @@ import org.catrobat.catroid.camera.CameraManager;
 import org.catrobat.catroid.common.BrickValues;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.SoundInfo;
-import org.catrobat.catroid.content.BroadcastEvent.BroadcastType;
 import org.catrobat.catroid.content.actions.AddItemToUserListAction;
 import org.catrobat.catroid.content.actions.ArduinoSendDigitalValueAction;
 import org.catrobat.catroid.content.actions.ArduinoSendPWMValueAction;
@@ -183,19 +182,33 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
-	public static Action createBroadcastAction(Sprite sprite, String broadcastMessage) {
+	public static Action createBroadcastAction(Sprite senderSprite, String broadcastMessage) {
 		BroadcastAction action = Actions.action(BroadcastAction.class);
 		BroadcastEvent event = new BroadcastEvent();
-		event.setSenderSprite(sprite);
-		event.setBroadcastMessage(broadcastMessage);
-		event.setType(BroadcastType.broadcast);
+		event.setWaitForCompletion(false);
+		event.setSender(senderSprite);
+		BroadcastEventIdentifier identifier = new BroadcastEventIdentifier(broadcastMessage, ProjectManager.getInstance().getCurrentScene());
+		event.setEventIdentifier(identifier);
+		action.setBroadcastEvent(event);
+
+		return action;
+	}
+
+	public Action createBroadcastActionFromWaiter(Sprite senderSprite, String broadcastMessage) {
+		BroadcastAction action = Actions.action(BroadcastAction.class);
+		BroadcastEvent event = new BroadcastEvent();
+		event.setSender(senderSprite);
+		event.setWaitForCompletion(true);
+		BroadcastEventIdentifier identifier = new BroadcastEventIdentifier(broadcastMessage, ProjectManager.getInstance().getCurrentScene());
+		event.setEventIdentifier(identifier);
 		action.setBroadcastEvent(event);
 		return action;
 	}
 
-	public static Action createBroadcastNotifyAction(BroadcastEvent event) {
+	public static Action createBroadcastNotifyAction(Sprite sprite, BroadcastEvent event) {
 		BroadcastNotifyAction action = Actions.action(BroadcastNotifyAction.class);
 		action.setEvent(event);
+		action.setSprite(sprite);
 		return action;
 	}
 
@@ -210,17 +223,6 @@ public class ActionFactory extends Actions {
 		WaitForBubbleBrickAction action = Actions.action(WaitForBubbleBrickAction.class);
 		action.setSprite(sprite);
 		action.setDelay(delay);
-		return action;
-	}
-
-	public Action createBroadcastActionFromWaiter(Sprite sprite, String broadcastMessage) {
-		BroadcastAction action = Actions.action(BroadcastAction.class);
-		BroadcastEvent event = new BroadcastEvent();
-		event.setSenderSprite(sprite);
-		event.setBroadcastMessage(broadcastMessage);
-		event.setRun(false);
-		event.setType(BroadcastType.broadcastWait);
-		action.setBroadcastEvent(event);
 		return action;
 	}
 

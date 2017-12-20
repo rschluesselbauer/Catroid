@@ -64,7 +64,7 @@ public class CollisionScript extends BroadcastScript {
 		return cloneScript;
 	}
 
-	public void updateBroadcastMessage(String oldCollisionObjectIdentifier, String newCollisionObjectIdentifier) {
+	/*public void updateBroadcastMessage(String oldCollisionObjectIdentifier, String newCollisionObjectIdentifier) {
 		CollisionObjectIdentifier collisionObjectIdentifier = splitBroadcastMessage();
 		if (collisionObjectIdentifier.getCollisionObjectOneIdentifier().equals(oldCollisionObjectIdentifier)) {
 			// update first object identifier
@@ -75,11 +75,11 @@ public class CollisionScript extends BroadcastScript {
 			String collisionObjectOneIdentifier = collisionObjectIdentifier.getCollisionObjectOneIdentifier();
 			setAndReturnBroadcastMessage(collisionObjectOneIdentifier, newCollisionObjectIdentifier);
 		}
-	}
+	}*/
 
-	public String setAndReturnBroadcastMessage(String collisionObjectOneIdentifier, String collisionObjectTwoIdentifier) {
-		String collisionBroadcastMessage = PhysicsCollision.generateBroadcastMessage(collisionObjectOneIdentifier,
-				collisionObjectTwoIdentifier);
+	public String setAndReturnBroadcastMessage(Sprite collisionObject1, Sprite collisionObject2) {
+		// BC-TODO: Generate suitable label messages
+		String collisionBroadcastMessage = "Any message, pls change";
 		setBroadcastMessage(collisionBroadcastMessage);
 		return collisionBroadcastMessage;
 	}

@@ -46,7 +46,7 @@ public class StopAllScriptsAction extends TemporalAction {
 			if (actor instanceof Look) {
 				Look look = (Look) actor;
 				Map<String, List<String>> scriptActions = look.createScriptActions();
-				StageActivity.stageListener.precomputeActionsForBroadcastEvents(scriptActions);
+				// StageActivity.stageListener.precomputeActionsForBroadcastEvents(scriptActions);
 			}
 		}
 	}

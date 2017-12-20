@@ -276,30 +276,19 @@ public class StageListener implements ApplicationListener {
 		if (!sprite.isClone()) {
 			return;
 		}
-
 		Scene currentScene = ProjectManager.getInstance().getSceneToPlay();
 		DataContainer userVariables = currentScene.getDataContainer();
 		userVariables.removeVariableListForSprite(sprite);
-		BroadcastHandler.removeSpriteFromScriptSpriteMap(sprite);
 		sprite.look.setLookVisible(false);
 		sprite.look.remove();
 		sprites.remove(sprite);
 		clonedSprites.remove(sprite);
 	}
 
-	public void clearAllClonedSpritesFromStage() {
-		Scene currentScene = ProjectManager.getInstance().getSceneToPlay();
-		DataContainer userVariables = currentScene.getDataContainer();
+	public void removeAllClonedSpritesFromStage() {
 		for (Sprite sprite : clonedSprites) {
-			userVariables.removeVariableListForSprite(sprite);
-
-			BroadcastHandler.removeSpriteFromScriptSpriteMap(sprite);
-
-			sprite.look.setLookVisible(false);
-			sprite.look.remove();
-			sprites.remove(sprite);
+			removeClonedSpriteFromStage(sprite);
 		}
-		clonedSprites.clear();
 	}
 
 	private void disposeClonedSprites() {
@@ -383,9 +372,7 @@ public class StageListener implements ApplicationListener {
 		}
 		transitionToScene(sceneName);
 		for (Sprite sprite : sceneToStart.getSpriteList()) {
-			sprite.getBroadcastSequenceMap().clear(sceneName);
-			sprite.getBroadcastWaitSequenceMap().clear(sceneName, sprite);
-			sprite.getBroadcastWaitSequenceMap().clearCurrentBroadcastEvent();
+			sprite.getBroadcastScriptMap().clearScene(sceneName);
 		}
 		SoundManager.getInstance().clear();
 		stageBackupMap.remove(sceneName);
@@ -413,7 +400,7 @@ public class StageListener implements ApplicationListener {
 		TouchUtil.reset();
 		BackgroundWaitHandler.reset();
 
-		clearAllClonedSpritesFromStage();
+		removeAllClonedSpritesFromStage();
 
 		reloadProject = true;
 	}
@@ -609,10 +596,6 @@ public class StageListener implements ApplicationListener {
 	}
 
 	public void precomputeActionsForBroadcastEvents(Map<String, List<String>> currentActions) {
-		Multimap<String, String> actionsToRestartMap = BroadcastHandler.getActionsToRestartMap();
-		if (!actionsToRestartMap.isEmpty()) {
-			return;
-		}
 		List<String> actions = new ArrayList<>();
 		if (currentActions.get(Constants.START_SCRIPT) != null) {
 			actions.addAll(currentActions.get(Constants.START_SCRIPT));
@@ -626,7 +609,7 @@ public class StageListener implements ApplicationListener {
 		if (currentActions.get(Constants.RASPI_SCRIPT) != null) {
 			actions.addAll(currentActions.get(Constants.RASPI_SCRIPT));
 		}
-		for (String action : actions) {
+		/*for (String action : actions) {
 			for (String actionOfLook : actions) {
 				if (action.equals(actionOfLook)
 						|| isFirstSequenceActionAndEqualsSecond(action, actionOfLook)
@@ -638,7 +621,7 @@ public class StageListener implements ApplicationListener {
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 	private static boolean isFirstSequenceActionAndEqualsSecond(String action1, String action2) {

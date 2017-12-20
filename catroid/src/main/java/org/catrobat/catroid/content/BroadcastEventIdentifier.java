@@ -23,46 +23,26 @@
 
 package org.catrobat.catroid.content;
 
-import com.badlogic.gdx.scenes.scene2d.Event;
+public class BroadcastEventIdentifier extends EventIdentifier {
+	public final String message;
+	public final Scene scene;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class BroadcastEvent extends Event {
-	private EventIdentifier eventIdentifier;
-	private Sprite sender;
-	private boolean waitForCompletion;
-	private List<Sprite> interrupters = new ArrayList<>();
-
-	public void setEventIdentifier(EventIdentifier eventIdentifier) {
-		this.eventIdentifier = eventIdentifier;
+	public BroadcastEventIdentifier(String message, Scene scene) {
+		this.message = message;
+		this.scene = scene;
 	}
 
-	public void setWaitForCompletion(boolean waitForCompletion) {
-		this.waitForCompletion = waitForCompletion;
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof BroadcastEventIdentifier) {
+			BroadcastEventIdentifier broadcastEventId = (BroadcastEventIdentifier) o;
+			return message.equals(broadcastEventId.message) && scene.equals(broadcastEventId.scene);
+		}
+		return false;
 	}
 
-	public boolean removeInterrupter(Sprite sprite) {
-		return interrupters.remove(sprite);
-	}
-
-	public EventIdentifier getEventIdentifier() {
-		return eventIdentifier;
-	}
-
-	public boolean isWaitForCompletion() {
-		return waitForCompletion;
-	}
-
-	public Sprite getSender() {
-		return sender;
-	}
-
-	public void setSender(Sprite sender) {
-		this.sender = sender;
-	}
-
-	public List<Sprite> getInterrupters() {
-		return interrupters;
+	@Override
+	public int hashCode() {
+		return message.hashCode() + scene.hashCode();
 	}
 }

@@ -23,46 +23,36 @@
 
 package org.catrobat.catroid.content;
 
-import com.badlogic.gdx.scenes.scene2d.Event;
+import com.google.common.base.Objects;
 
-import java.util.ArrayList;
-import java.util.List;
+public class CollisionEventIdentifier extends EventIdentifier {
+	public final Sprite sprite1;
+	public final Sprite sprite2;
+	public final Scene scene;
 
-public class BroadcastEvent extends Event {
-	private EventIdentifier eventIdentifier;
-	private Sprite sender;
-	private boolean waitForCompletion;
-	private List<Sprite> interrupters = new ArrayList<>();
-
-	public void setEventIdentifier(EventIdentifier eventIdentifier) {
-		this.eventIdentifier = eventIdentifier;
+	public CollisionEventIdentifier(Sprite sprite1, Sprite sprite2, Scene scene) {
+		this.sprite1 = sprite1;
+		this.sprite2 = sprite2;
+		this.scene = scene;
 	}
 
-	public void setWaitForCompletion(boolean waitForCompletion) {
-		this.waitForCompletion = waitForCompletion;
+	public CollisionEventIdentifier(Sprite sprite1, Scene scene) {
+		this(sprite1, null, scene);
 	}
 
-	public boolean removeInterrupter(Sprite sprite) {
-		return interrupters.remove(sprite);
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof CollisionEventIdentifier) {
+			CollisionEventIdentifier collisionEventId = (CollisionEventIdentifier) o;
+			return scene.equals(collisionEventId.scene)
+					&& (Objects.equal(sprite1, collisionEventId.sprite1) || Objects.equal(sprite1, collisionEventId.sprite2))
+					&& (Objects.equal(sprite2, collisionEventId.sprite1) || Objects.equal(sprite2, collisionEventId.sprite2));
+		}
+		return false;
 	}
 
-	public EventIdentifier getEventIdentifier() {
-		return eventIdentifier;
-	}
-
-	public boolean isWaitForCompletion() {
-		return waitForCompletion;
-	}
-
-	public Sprite getSender() {
-		return sender;
-	}
-
-	public void setSender(Sprite sender) {
-		this.sender = sender;
-	}
-
-	public List<Sprite> getInterrupters() {
-		return interrupters;
+	@Override
+	public int hashCode() {
+		return sprite1.hashCode() + sprite2.hashCode() + scene.hashCode();
 	}
 }

@@ -78,6 +78,11 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 
 	@Override
 	public Brick clone() {
+		try {
+			super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 		return new CollisionReceiverBrick(new CollisionScript(getBroadcastMessage()));
 	}
 
@@ -116,12 +121,15 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				String collisionObjectOneIdentifier = ProjectManager.getInstance().getCurrentSprite().getName();
-				String collisionObjectTwoIdentifier = broadcastSpinner.getSelectedItem().toString();
-				if (collisionObjectTwoIdentifier.equals(getDisplayedAnythingString(context))) {
-					collisionObjectTwoIdentifier = PhysicsCollision.COLLISION_WITH_ANYTHING_IDENTIFIER;
+				Sprite collisionObject1 = ProjectManager.getInstance().getCurrentSprite();
+				String collisionObject2Identifier = broadcastSpinner.getSelectedItem().toString();
+				Sprite collisionObject2;
+				if (collisionObject2Identifier.equals(getDisplayedAnythingString(context))) {
+					collisionObject2 = null;
+				} else {
+					collisionObject2 = ProjectManager.getInstance().getSceneToPlay().getSpriteBySpriteName(collisionObject2Identifier);
 				}
-				selectedMessage = collisionScript.setAndReturnBroadcastMessage(collisionObjectOneIdentifier, collisionObjectTwoIdentifier);
+				selectedMessage = collisionScript.setAndReturnBroadcastMessage(collisionObject1, collisionObject2);
 			}
 
 			@Override

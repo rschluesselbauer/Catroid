@@ -36,6 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -105,13 +106,8 @@ public class Look extends Image {
 
 		this.addListener(new BroadcastListener() {
 			@Override
-			public void handleBroadcastEvent(BroadcastEvent event, String broadcastMessage) {
-				doHandleBroadcastEvent(event.getSenderSprite(), broadcastMessage);
-			}
-
-			@Override
-			public void handleBroadcastFromWaiterEvent(BroadcastEvent event, String broadcastMessage) {
-				doHandleBroadcastFromWaiterEvent(event, broadcastMessage);
+			public void handleBroadcastEvent(BroadcastEvent event) {
+				Look.this.handleBroadcastEvent(event);
 			}
 		});
 	}
@@ -199,7 +195,6 @@ public class Look extends Image {
 	public void act(float delta) {
 		Array<Action> actions = getActions();
 		allActionsAreFinished = false;
-		int finishedCount = 0;
 
 		for (Iterator<Action> iterator = Look.actionsToRestart.iterator(); iterator.hasNext(); ) {
 			Action actionToRestart = iterator.next();
@@ -207,14 +202,14 @@ public class Look extends Image {
 			iterator.remove();
 		}
 
-		int n = actions.size;
-		for (int i = 0; i < n; i++) {
+		for (int i = 0; i < actions.size; i++) {
 			Action action = actions.get(i);
 			if (action.act(delta)) {
-				finishedCount++;
+				actions.removeIndex(i);
+				i--;
 			}
 		}
-		if (finishedCount == actions.size) {
+		if (0 == actions.size) {
 			allActionsAreFinished = true;
 		}
 	}
@@ -559,12 +554,12 @@ public class Look extends Image {
 		return breakDownCatroidAngle(catroidAngle);
 	}
 
-	protected void doHandleBroadcastEvent(Sprite senderSprite, String broadcastMessage) {
-		BroadcastHandler.doHandleBroadcastEvent(this, senderSprite, broadcastMessage);
+	protected void handleBroadcastEvent(BroadcastEvent broadcastEvent) {
+		BroadcastHandler.handleBroadcastEvent(this, broadcastEvent);
 	}
 
 	protected void doHandleBroadcastFromWaiterEvent(BroadcastEvent event, String broadcastMessage) {
-		BroadcastHandler.doHandleBroadcastFromWaiterEvent(this, event, broadcastMessage);
+		// BroadcastHandler.doHandleBroadcastFromWaiterEvent(this, event, broadcastMessage);
 	}
 
 	private class BrightnessContrastHueShader extends ShaderProgram {

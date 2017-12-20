@@ -381,15 +381,12 @@ public class ScriptActivity extends BaseActivity {
 				getFragmentManager()
 						.findFragmentByTag(FormulaEditorCategoryListFragment.SENSOR_TAG);
 
-		if (formulaEditorFragment != null && formulaEditorFragment.isVisible()
+		return formulaEditorFragment != null && formulaEditorFragment.isVisible()
 				|| formulaEditorObjectFragment != null && formulaEditorObjectFragment.isVisible()
 				|| formulaEditorFunctionFragment != null && formulaEditorFunctionFragment.isVisible()
 				|| formulaEditorLogicFragment != null && formulaEditorLogicFragment.isVisible()
 				|| formulaEditorSensorFragment != null && formulaEditorSensorFragment.isVisible()
-				|| formulaEditorDataFragment != null && formulaEditorDataFragment.isVisible()) {
-			return true;
-		}
-		return false;
+				|| formulaEditorDataFragment != null && formulaEditorDataFragment.isVisible();
 	}
 
 	private void openBackPack() {
@@ -617,7 +614,6 @@ public class ScriptActivity extends BaseActivity {
 			fragmentTransaction.commit();
 			nfcTagFragment = null;
 		}
-		BroadcastHandler.clearActionMaps();
 		if (isHoveringActive()) {
 			scriptFragment.getListView().animateHoveringBrick();
 		} else {

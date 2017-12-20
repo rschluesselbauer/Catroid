@@ -396,7 +396,8 @@ public class SpritesListFragment extends Fragment implements SpriteAdapter.OnSpr
 		copiedSprite.setName(getSpriteName(spriteToEdit.getName().concat(getString(R.string.copy_sprite_name_suffix)),
 				0));
 		String newName = copiedSprite.getName();
-		copiedSprite.updateCollisionBroadcastMessages(oldName, newName);
+		//BC-TODO: Checken ob man da was machen muss
+		//copiedSprite.updateCollisionBroadcastMessages(oldName, newName);
 
 		ProjectManager projectManager = ProjectManager.getInstance();
 		projectManager.addSprite(copiedSprite);
