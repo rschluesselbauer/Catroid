@@ -371,9 +371,10 @@ public class StageListener implements ApplicationListener {
 			return;
 		}
 		transitionToScene(sceneName);
-		for (Sprite sprite : sceneToStart.getSpriteList()) {
+		// BC-TODO: Wozu sollte man clearen?
+		/*for (Sprite sprite : sceneToStart.getSpriteList()) {
 			sprite.getBroadcastScriptMap().clearScene(sceneName);
-		}
+		}*/
 		SoundManager.getInstance().clear();
 		stageBackupMap.remove(sceneName);
 		scene.firstStart = true;

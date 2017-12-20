@@ -40,6 +40,7 @@ import org.catrobat.catroid.content.actions.AskSpeechAction;
 import org.catrobat.catroid.content.actions.BackgroundNotifyAction;
 import org.catrobat.catroid.content.actions.BroadcastAction;
 import org.catrobat.catroid.content.actions.BroadcastNotifyAction;
+import org.catrobat.catroid.content.actions.BroadcastSequenceAction;
 import org.catrobat.catroid.content.actions.CameraBrickAction;
 import org.catrobat.catroid.content.actions.ChangeBrightnessByNAction;
 import org.catrobat.catroid.content.actions.ChangeColorByNAction;
@@ -829,6 +830,10 @@ public class ActionFactory extends Actions {
 
 	public Action createSequence() {
 		return Actions.sequence();
+	}
+
+	public static Action createBroadcastSequence(Script script) {
+		return new BroadcastSequenceAction(script);
 	}
 
 	public Action createSetBounceFactorAction(Sprite sprite, Formula bounceFactor) {

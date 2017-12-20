@@ -23,15 +23,43 @@
 
 package org.catrobat.catroid.content;
 
+import com.badlogic.gdx.scenes.scene2d.Action;
+
+import org.catrobat.catroid.content.actions.BroadcastSequenceAction;
+
+import java.util.Collection;
+
 public class BroadcastHandler {
 
 	private BroadcastHandler() {
 		throw new AssertionError();
 	}
 
-	public static void handleBroadcastEvent(Look look, BroadcastEvent broadcastEvent) {
-		//look.sprite.getBroadcastScriptMap().get()
+	public static void handleBroadcastEvent(Look look, BroadcastEvent event) {
+		Collection<Script> scripts = look.sprite.getBroadcastScriptMap().get(event.getEventIdentifier());
+		for (Script script : scripts) {
+			BroadcastSequenceAction actionToBeAdded = createBroadcastActionSequence(look.sprite, script);
+			if (event.waitForCompletion()) {
+				event.addInterrupter(look.sprite);
+				actionToBeAdded.addAction(ActionFactory.createBroadcastNotifyAction(look.sprite, event));
+			}
+			addOrRestartActionToLook(actionToBeAdded, look);
+		}
 	}
 
+	static BroadcastSequenceAction createBroadcastActionSequence(Sprite sprite, Script script) {
+		BroadcastSequenceAction sequence = (BroadcastSequenceAction) ActionFactory.createBroadcastSequence(script);
+		script.run(sprite, sequence);
+		return sequence;
+	}
 
+	static void addOrRestartActionToLook(BroadcastSequenceAction actionToBeAdded, Look look) {
+		for (Action action : look.getActions()) {
+			if (action instanceof BroadcastSequenceAction && ((BroadcastSequenceAction) action).getScript() == actionToBeAdded.getScript()) {
+				action.restart();
+				return;
+			}
+		}
+		look.addAction(actionToBeAdded);
+	}
 }

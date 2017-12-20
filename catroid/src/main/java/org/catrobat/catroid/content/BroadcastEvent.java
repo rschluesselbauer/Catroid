@@ -46,11 +46,15 @@ public class BroadcastEvent extends Event {
 		return interrupters.remove(sprite);
 	}
 
+	public void addInterrupter(Sprite sprite) {
+		interrupters.add(sprite);
+	}
+
 	public EventIdentifier getEventIdentifier() {
 		return eventIdentifier;
 	}
 
-	public boolean isWaitForCompletion() {
+	public boolean waitForCompletion() {
 		return waitForCompletion;
 	}
 

@@ -30,12 +30,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 import org.catrobat.catroid.CatroidApplication;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.common.BrickValues;
-import org.catrobat.catroid.common.BroadcastScriptMap;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.NfcTagData;
@@ -86,7 +87,7 @@ public class Sprite implements Serializable, Cloneable {
 	public transient PenConfiguration penConfiguration = new PenConfiguration();
 	private transient boolean convertToSingleSprite = false;
 	private transient boolean convertToGroupItemSprite = false;
-	private transient BroadcastScriptMap broadcastScriptMap = new BroadcastScriptMap();
+	private transient Multimap<EventIdentifier, Script> broadcastScriptMap = HashMultimap.create();
 
 	@XStreamAsAttribute
 	private String name;
@@ -288,9 +289,8 @@ public class Sprite implements Serializable, Cloneable {
 	}
 
 	private void putBroadcastSequenceAction(String broadcastMessage, Script script) {
-		String sceneName = ProjectManager.getInstance().getSceneToPlay().getName();
-		// BC-TODO: Replace broadcastMessage with broadcast identifier
-		broadcastScriptMap.put(sceneName, broadcastMessage, script);
+		EventIdentifier identifier = new BroadcastEventIdentifier(broadcastMessage, ProjectManager.getInstance().getSceneToPlay());
+		broadcastScriptMap.put(identifier, script);
 	}
 
 	public ActionFactory getActionFactory() {
@@ -564,7 +564,7 @@ public class Sprite implements Serializable, Cloneable {
 		look.addAction(whenParallelAction);
 	}
 
-	private SequenceAction createActionSequence(Script script) {
+	public SequenceAction createActionSequence(Script script) {
 		SequenceAction sequence = ActionFactory.sequence();
 		script.run(this, sequence);
 		return sequence;
@@ -984,7 +984,7 @@ public class Sprite implements Serializable, Cloneable {
 		return isClone;
 	}
 
-	public BroadcastScriptMap getBroadcastScriptMap() {
+	public Multimap<EventIdentifier, Script> getBroadcastScriptMap() {
 		return broadcastScriptMap;
 	}
 }
