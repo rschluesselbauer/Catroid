@@ -23,29 +23,15 @@
 package org.catrobat.catroid.content;
 
 import org.catrobat.catroid.content.bricks.ScriptBrick;
-import org.catrobat.catroid.physics.PhysicsCollision;
 import org.catrobat.catroid.physics.content.bricks.CollisionReceiverBrick;
 
-public class CollisionScript extends BroadcastScript {
+public class CollisionScript extends Script implements BroadcastMessage {
 
 	private static final long serialVersionUID = 1L;
+	private Sprite spriteToCollideWith;
 
-	public CollisionScript(String broadcastMessage) {
-		super(broadcastMessage);
-	}
-
-	public CollisionObjectIdentifier splitBroadcastMessage() {
-		String broadcastMessage = getBroadcastMessage();
-		if (broadcastMessage == null) {
-			return new CollisionObjectIdentifier("", "");
-		}
-
-		String[] collisionObjectIdentifierArray = broadcastMessage.split(PhysicsCollision.COLLISION_MESSAGE_CONNECTOR);
-		if (collisionObjectIdentifierArray.length != 2) {
-			return new CollisionObjectIdentifier("", "");
-		}
-
-		return new CollisionObjectIdentifier(collisionObjectIdentifierArray[0], collisionObjectIdentifierArray[1]);
+	public CollisionScript(Sprite spriteToCollideWith) {
+		this.spriteToCollideWith = spriteToCollideWith;
 	}
 
 	@Override
@@ -58,30 +44,26 @@ public class CollisionScript extends BroadcastScript {
 
 	@Override
 	public Script copyScriptForSprite(Sprite copySprite) {
-		CollisionScript cloneScript = new CollisionScript(receivedMessage);
+		CollisionScript cloneScript = new CollisionScript(spriteToCollideWith);
 
 		doCopy(copySprite, cloneScript);
 		return cloneScript;
 	}
-
-	/*public void updateBroadcastMessage(String oldCollisionObjectIdentifier, String newCollisionObjectIdentifier) {
-		CollisionObjectIdentifier collisionObjectIdentifier = splitBroadcastMessage();
-		if (collisionObjectIdentifier.getCollisionObjectOneIdentifier().equals(oldCollisionObjectIdentifier)) {
-			// update first object identifier
-			String collisionObjectTwoIdentifier = collisionObjectIdentifier.getCollisionObjectTwoIdentifier();
-			setAndReturnBroadcastMessage(newCollisionObjectIdentifier, collisionObjectTwoIdentifier);
-		} else if (collisionObjectIdentifier.getCollisionObjectTwoIdentifier().equals(oldCollisionObjectIdentifier)) {
-			// update second object identifier
-			String collisionObjectOneIdentifier = collisionObjectIdentifier.getCollisionObjectOneIdentifier();
-			setAndReturnBroadcastMessage(collisionObjectOneIdentifier, newCollisionObjectIdentifier);
-		}
-	}*/
 
 	public String setAndReturnBroadcastMessage(Sprite collisionObject1, Sprite collisionObject2) {
 		// BC-TODO: Generate suitable label messages
 		String collisionBroadcastMessage = "Any message, pls change";
 		setBroadcastMessage(collisionBroadcastMessage);
 		return collisionBroadcastMessage;
+	}
+
+	public Sprite getSpriteToCollideWith() {
+		return spriteToCollideWith;
+	}
+
+	@Override
+	public String getBroadcastMessage() {
+		return null;
 	}
 
 	public class CollisionObjectIdentifier {

@@ -243,21 +243,24 @@ public class Sprite implements Serializable, Cloneable {
 			if (script instanceof StartScript && !isClone && includeStartScripts) {
 				Action sequenceAction = createActionSequence(script);
 				look.addAction(sequenceAction);
-				//BroadcastHandler.getActionScriptMap().put(sequenceAction, script);
-				// BroadcastHandler.getScriptSpriteMap().put(script, this);
 				String actionName = sequenceAction.toString() + Constants.ACTION_SPRITE_SEPARATOR + name + scriptCounter;
 				if (scriptActions.containsKey(Constants.START_SCRIPT)) {
 					scriptActions.get(Constants.START_SCRIPT).add(actionName);
-					// BroadcastHandler.getStringActionMap().put(actionName, sequenceAction);
 				} else {
 					List<String> startScriptList = new ArrayList<>();
 					startScriptList.add(actionName);
 					scriptActions.put(Constants.START_SCRIPT, startScriptList);
-					//BroadcastHandler.getStringActionMap().put(actionName, sequenceAction);
 				}
+			} else if (script instanceof CollisionScript) {
+				CollisionScript collisionScript = (CollisionScript) script;
+				EventIdentifier identifier = new CollisionEventIdentifier(this, collisionScript
+						.getSpriteToCollideWith(), ProjectManager.getInstance().getSceneToPlay());
+				broadcastScriptMap.put(identifier, script);
+
 			} else if (script instanceof BroadcastScript) {
 				BroadcastScript broadcastScript = (BroadcastScript) script;
-				putBroadcastSequenceAction(broadcastScript.getBroadcastMessage(), script);
+				EventIdentifier identifier = new BroadcastEventIdentifier(broadcastScript.getBroadcastMessage(), ProjectManager.getInstance().getSceneToPlay());
+				broadcastScriptMap.put(identifier, script);
 			} else if (script instanceof WhenConditionScript) {
 				createWhenConditionBecomesTrueAction((WhenConditionScript) script);
 			}
@@ -286,11 +289,6 @@ public class Sprite implements Serializable, Cloneable {
 
 		Action whenConditionBecomesTrueAction = actionFactory.createForeverAction(this, foreverSequence);
 		look.addAction(whenConditionBecomesTrueAction);
-	}
-
-	private void putBroadcastSequenceAction(String broadcastMessage, Script script) {
-		EventIdentifier identifier = new BroadcastEventIdentifier(broadcastMessage, ProjectManager.getInstance().getSceneToPlay());
-		broadcastScriptMap.put(identifier, script);
 	}
 
 	public ActionFactory getActionFactory() {

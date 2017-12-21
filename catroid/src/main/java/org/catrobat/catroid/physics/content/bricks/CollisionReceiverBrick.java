@@ -36,7 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.MessageContainer;
-import org.catrobat.catroid.content.BroadcastMessage;
 import org.catrobat.catroid.content.CollisionScript;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
@@ -44,11 +43,10 @@ import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.BrickBaseType;
 import org.catrobat.catroid.content.bricks.BrickViewProvider;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
-import org.catrobat.catroid.physics.PhysicsCollision;
 
 import java.util.List;
 
-public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick, BroadcastMessage, Cloneable {
+public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick, Cloneable {
 	private static final long serialVersionUID = 1L;
 	public static final String ANYTHING_ESCAPE_CHAR = "\0";
 
@@ -83,7 +81,7 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		return new CollisionReceiverBrick(new CollisionScript(getBroadcastMessage()));
+		return new CollisionReceiverBrick(new CollisionScript(getSpriteToCollideWith()));
 	}
 
 	@Override
@@ -91,12 +89,8 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 		return PHYSICS;
 	}
 
-	@Override
-	public String getBroadcastMessage() {
-		if (collisionScript == null) {
-			return selectedMessage;
-		}
-		return collisionScript.getBroadcastMessage();
+	public Sprite getSpriteToCollideWith() {
+		return collisionScript == null ? null : collisionScript.getSpriteToCollideWith();
 	}
 
 	@Override
@@ -106,8 +100,8 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 		}
 
 		if (collisionScript == null) {
-			collisionScript = new CollisionScript(selectedMessage);
-			MessageContainer.addMessage(getBroadcastMessage());
+			collisionScript = new CollisionScript(getSpriteToCollideWith());
+			MessageContainer.addMessage(collisionScript.getBroadcastMessage());
 		}
 
 		view = View.inflate(context, R.layout.brick_physics_collision_receive, null);
