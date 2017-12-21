@@ -127,7 +127,7 @@ public final class MessageContainer {
 		hiddenEntries = 0;
 
 		for (String message : usedMessages) {
-			addMessageToAdapter(message);
+			receiverMap.put(message, null);
 		}
 
 		if (messageAdapter != null) {

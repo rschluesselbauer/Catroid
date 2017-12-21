@@ -36,9 +36,8 @@ public class BroadcastHandler {
 	}
 
 	public static void handleBroadcastEvent(Look look, BroadcastEvent event) {
-		Collection<Script> scripts = look.sprite.getBroadcastScriptMap().get(event.getEventIdentifier());
-		for (Script script : scripts) {
-			BroadcastSequenceAction actionToBeAdded = createBroadcastActionSequence(look.sprite, script);
+		Collection<BroadcastSequenceAction> sequenceActions = look.sprite.getBroadcastSequenceActionMap().get(event.getEventIdentifier());
+		for (BroadcastSequenceAction actionToBeAdded : sequenceActions) {
 			if (event.waitForCompletion()) {
 				event.addInterrupter(look.sprite);
 				actionToBeAdded.addAction(ActionFactory.createBroadcastNotifyAction(look.sprite, event));
@@ -47,19 +46,14 @@ public class BroadcastHandler {
 		}
 	}
 
-	static BroadcastSequenceAction createBroadcastActionSequence(Sprite sprite, Script script) {
-		BroadcastSequenceAction sequence = (BroadcastSequenceAction) ActionFactory.createBroadcastSequence(script);
-		script.run(sprite, sequence);
-		return sequence;
-	}
-
 	static void addOrRestartActionToLook(BroadcastSequenceAction actionToBeAdded, Look look) {
 		for (Action action : look.getActions()) {
 			if (action instanceof BroadcastSequenceAction && ((BroadcastSequenceAction) action).getScript() == actionToBeAdded.getScript()) {
-				action.restart();
+				look.actionsToRestartAdd(action);
 				return;
 			}
 		}
+		look.actionsToRestartAdd(actionToBeAdded);
 		look.addAction(actionToBeAdded);
 	}
 }
