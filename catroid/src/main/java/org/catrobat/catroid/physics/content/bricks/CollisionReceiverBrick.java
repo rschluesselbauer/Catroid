@@ -35,7 +35,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.MessageContainer;
 import org.catrobat.catroid.content.CollisionScript;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
@@ -52,7 +51,6 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 
 	private CollisionScript collisionScript;
 	ArrayAdapter<String> messageAdapter;
-
 
 	public CollisionReceiverBrick(CollisionScript collisionScript) {
 		this.collisionScript = collisionScript;
@@ -96,9 +94,6 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 
 		if (collisionScript == null) {
 			collisionScript = new CollisionScript(getSpriteToCollideWith());
-			String broadcastMessage = getBroadcastMessage();
-			broadcastMessage = broadcastMessage == null ? context.getString(R.string.collision_with_anything) : broadcastMessage;
-			MessageContainer.addMessage(broadcastMessage);
 		}
 
 		view = View.inflate(context, R.layout.brick_physics_collision_receive, null);
@@ -202,7 +197,6 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 
 	public String getBroadcastMessage() {
 		if (collisionScript == null || collisionScript.getSpriteToCollideWith() == null) {
-			// BC-TODO: Translate R.strings.collision_with_anything
 			return null;
 		}
 		return collisionScript.getSpriteToCollideWith().getName();

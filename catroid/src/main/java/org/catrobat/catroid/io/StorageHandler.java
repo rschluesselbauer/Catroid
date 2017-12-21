@@ -587,11 +587,14 @@ public final class StorageHandler {
 
 	public Project loadProject(String projectName, Context context) {
 		File file = new File(DEFAULT_ROOT);
+		boolean b = true;
 		if (!file.exists()) {
 			Log.d(TAG, "Directory does not exist!");
 			return null;
 		}
-
+		if (!b) {
+			return null;
+		}
 		try {
 			if (!checkIfProjectHasScenes(projectName)) {
 				return loadSupportProject(projectName, context);

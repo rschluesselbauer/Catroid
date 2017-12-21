@@ -53,6 +53,6 @@ public class CollisionEventIdentifier extends EventIdentifier {
 
 	@Override
 	public int hashCode() {
-		return sprite1.hashCode() + sprite2.hashCode() + scene.hashCode();
+		return (sprite1 == null ? 0 : sprite1.hashCode()) + (sprite2 == null ? 0 : sprite2.hashCode()) + scene.hashCode();
 	}
 }

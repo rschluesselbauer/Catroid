@@ -22,15 +22,17 @@
  */
 package org.catrobat.catroid.content;
 
+import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.physics.content.bricks.CollisionReceiverBrick;
 
-public class CollisionScript extends Script {
+public class CollisionScript extends BroadcastScript {
 
 	private static final long serialVersionUID = 1L;
 	private Sprite spriteToCollideWith;
 
 	public CollisionScript(Sprite spriteToCollideWith) {
+		super(spriteToCollideWith.getName());
 		this.spriteToCollideWith = spriteToCollideWith;
 	}
 
@@ -48,6 +50,11 @@ public class CollisionScript extends Script {
 
 		doCopy(copySprite, cloneScript);
 		return cloneScript;
+	}
+
+	public CollisionEventIdentifier getEventIdentifier() {
+		return new CollisionEventIdentifier(ProjectManager.getInstance().getCurrentSprite(), spriteToCollideWith, ProjectManager
+				.getInstance().getCurrentScene());
 	}
 
 	public void setSpriteToCollideWith(Sprite spriteToCollideWith) {
