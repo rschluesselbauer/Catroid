@@ -25,7 +25,7 @@ package org.catrobat.catroid.content;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.physics.content.bricks.CollisionReceiverBrick;
 
-public class CollisionScript extends Script implements BroadcastMessage {
+public class CollisionScript extends Script {
 
 	private static final long serialVersionUID = 1L;
 	private Sprite spriteToCollideWith;
@@ -50,37 +50,11 @@ public class CollisionScript extends Script implements BroadcastMessage {
 		return cloneScript;
 	}
 
-	public String setAndReturnBroadcastMessage(Sprite collisionObject1, Sprite collisionObject2) {
-		// BC-TODO: Generate suitable label messages
-		String collisionBroadcastMessage = "Any message, pls change";
-		setBroadcastMessage(collisionBroadcastMessage);
-		return collisionBroadcastMessage;
+	public void setSpriteToCollideWith(Sprite spriteToCollideWith) {
+		this.spriteToCollideWith = spriteToCollideWith;
 	}
 
 	public Sprite getSpriteToCollideWith() {
 		return spriteToCollideWith;
-	}
-
-	@Override
-	public String getBroadcastMessage() {
-		return null;
-	}
-
-	public class CollisionObjectIdentifier {
-		private String collisionObjectOneIdentifier;
-		private String collisionObjectTwoIdentifier;
-
-		public CollisionObjectIdentifier(String collisionObjectOneIdentifier, String collisionObjectTwoIdentifier) {
-			this.collisionObjectOneIdentifier = collisionObjectOneIdentifier;
-			this.collisionObjectTwoIdentifier = collisionObjectTwoIdentifier;
-		}
-
-		public String getCollisionObjectTwoIdentifier() {
-			return collisionObjectTwoIdentifier;
-		}
-
-		public String getCollisionObjectOneIdentifier() {
-			return collisionObjectOneIdentifier;
-		}
 	}
 }

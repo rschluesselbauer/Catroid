@@ -66,7 +66,6 @@ import org.catrobat.catroid.formulaeditor.InternToken;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.datacontainer.DataContainer;
 import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.physics.PhysicsCollision;
 import org.catrobat.catroid.stage.StageActivity;
 import org.catrobat.catroid.test.utils.Reflection;
 import org.catrobat.catroid.ui.MainMenuActivity;
@@ -345,7 +344,7 @@ public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<Mai
 		Sprite spriteOne = spriteList.get(1);
 		Sprite spriteTwo = spriteList.get(2);
 		CollisionScript collisionScript = new CollisionScript("");
-		collisionScript.setAndReturnBroadcastMessage(spriteOne, spriteTwo);
+		collisionScript.setSpriteToCollideWith(spriteOne, spriteTwo);
 		collisionScript.getScriptBrick();
 		spriteOne.addScript(collisionScript);
 

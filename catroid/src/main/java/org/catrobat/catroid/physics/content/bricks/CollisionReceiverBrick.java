@@ -51,16 +51,11 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 	public static final String ANYTHING_ESCAPE_CHAR = "\0";
 
 	private CollisionScript collisionScript;
-	private transient String selectedMessage;
 	ArrayAdapter<String> messageAdapter;
 
-	public CollisionReceiverBrick(String spriteName) {
-		this.selectedMessage = spriteName;
-	}
 
 	public CollisionReceiverBrick(CollisionScript collisionScript) {
 		this.collisionScript = collisionScript;
-		this.selectedMessage = "";
 
 		if (collisionScript != null && collisionScript.isCommentedOut()) {
 			setCommentedOut(true);
@@ -101,7 +96,9 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 
 		if (collisionScript == null) {
 			collisionScript = new CollisionScript(getSpriteToCollideWith());
-			MessageContainer.addMessage(collisionScript.getBroadcastMessage());
+			String broadcastMessage = getBroadcastMessage();
+			broadcastMessage = broadcastMessage == null ? context.getString(R.string.collision_with_anything) : broadcastMessage;
+			MessageContainer.addMessage(broadcastMessage);
 		}
 
 		view = View.inflate(context, R.layout.brick_physics_collision_receive, null);
@@ -115,7 +112,6 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				Sprite collisionObject1 = ProjectManager.getInstance().getCurrentSprite();
 				String collisionObject2Identifier = broadcastSpinner.getSelectedItem().toString();
 				Sprite collisionObject2;
 				if (collisionObject2Identifier.equals(getDisplayedAnythingString(context))) {
@@ -123,7 +119,7 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 				} else {
 					collisionObject2 = ProjectManager.getInstance().getSceneToPlay().getSpriteBySpriteName(collisionObject2Identifier);
 				}
-				selectedMessage = collisionScript.setAndReturnBroadcastMessage(collisionObject1, collisionObject2);
+				collisionScript.setSpriteToCollideWith(collisionObject2);
 			}
 
 			@Override
@@ -171,12 +167,8 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 
 	private void setSpinnerSelection(Spinner spinner) {
 		String broadcastMessage = getBroadcastMessage();
-		if (broadcastMessage == null || broadcastMessage.equals("")) {
+		if (broadcastMessage == null) {
 			spinner.setSelection(0);
-		} else if (collisionScript != null && collisionScript.getBroadcastMessage().equals(broadcastMessage)) {
-			CollisionScript.CollisionObjectIdentifier identifier = collisionScript.splitBroadcastMessage();
-			int position = getPositionOfMessageInAdapter(spinner.getContext(), identifier.getCollisionObjectTwoIdentifier());
-			spinner.setSelection(position);
 		} else {
 			int position = getPositionOfMessageInAdapter(spinner.getContext(), broadcastMessage);
 			spinner.setSelection(position);
@@ -206,5 +198,13 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 	public void setCommentedOut(boolean commentedOut) {
 		super.setCommentedOut(commentedOut);
 		getScriptSafe().setCommentedOut(commentedOut);
+	}
+
+	public String getBroadcastMessage() {
+		if (collisionScript == null || collisionScript.getSpriteToCollideWith() == null) {
+			// BC-TODO: Translate R.strings.collision_with_anything
+			return null;
+		}
+		return collisionScript.getSpriteToCollideWith().getName();
 	}
 }
