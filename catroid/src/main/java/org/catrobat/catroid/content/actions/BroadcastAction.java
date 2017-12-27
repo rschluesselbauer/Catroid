@@ -28,7 +28,6 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.BroadcastEvent;
 import org.catrobat.catroid.content.Sprite;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class BroadcastAction extends Action {
@@ -46,14 +45,6 @@ public class BroadcastAction extends Action {
 			}
 		}
 		List<Sprite> interrupters = event.getInterrupters();
-		// Clear removed clones we are still waiting for
-		/*List<Sprite> sprites = ProjectManager.getInstance().getSceneToPlay().getSpriteList();
-		for (Iterator<Sprite> iter = interrupters.iterator(); iter.hasNext(); ) {
-			Sprite sprite = iter.next();
-			if (sprite.isClone() && !sprites.contains(sprite)) {
-				iter.remove();
-			}
-		}*/
 
 		if (interrupters.size() == 0 && !executeOnce) {
 			return true;

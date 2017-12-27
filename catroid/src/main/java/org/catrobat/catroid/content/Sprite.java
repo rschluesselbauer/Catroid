@@ -258,10 +258,10 @@ public class Sprite implements Serializable, Cloneable {
 						.getSpriteToCollideWith(), ProjectManager.getInstance().getSceneToPlay());
 
 				broadcastSequenceActionMap.put(identifier, createBroadcastActionSequence(script));
-
 			} else if (script instanceof BroadcastScript) {
 				BroadcastScript broadcastScript = (BroadcastScript) script;
-				EventIdentifier identifier = new BroadcastEventIdentifier(broadcastScript.getBroadcastMessage(), ProjectManager.getInstance().getSceneToPlay());
+				EventIdentifier identifier = new BroadcastEventIdentifier(broadcastScript.getBroadcastMessage(),
+						ProjectManager.getInstance().getSceneToPlay(), BroadcastEventType.RASPI);
 				broadcastSequenceActionMap.put(identifier, createBroadcastActionSequence(script));
 			} else if (script instanceof WhenConditionScript) {
 				createWhenConditionBecomesTrueAction((WhenConditionScript) script);
@@ -770,17 +770,6 @@ public class Sprite implements Serializable, Cloneable {
 		}
 		setName(newSpriteName);
 	}
-
-	// BC-TODO: Checken ob nötig
-	/*public void updateCollisionBroadcastMessages(String oldCollisionObjectIdentifier, String
-			newCollisionObjectIdentifier) {
-		for (int scriptIndex = 0; scriptIndex < getNumberOfScripts(); scriptIndex++) {
-			Script currentScript = getScript(scriptIndex);
-			if (currentScript instanceof CollisionScript) {
-				((CollisionScript) currentScript).updateBroadcastMessage(oldCollisionObjectIdentifier, newCollisionObjectIdentifier);
-			}
-		}
-	}*/
 
 	public boolean containsLookData(LookData lookData) {
 		for (LookData lookOfSprite : lookList) {

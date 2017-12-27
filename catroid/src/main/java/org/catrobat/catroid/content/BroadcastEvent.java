@@ -32,14 +32,17 @@ public class BroadcastEvent extends Event {
 	private EventIdentifier eventIdentifier;
 	private Sprite sender;
 	private boolean waitForCompletion;
-	private List<Sprite> interrupters = new ArrayList<>();
+	private List<Sprite> interrupters;
+
+	public BroadcastEvent(boolean waitForCompletion) {
+		this.waitForCompletion = waitForCompletion;
+		if (waitForCompletion) {
+			interrupters = new ArrayList<>();
+		}
+	}
 
 	public void setEventIdentifier(EventIdentifier eventIdentifier) {
 		this.eventIdentifier = eventIdentifier;
-	}
-
-	public void setWaitForCompletion(boolean waitForCompletion) {
-		this.waitForCompletion = waitForCompletion;
 	}
 
 	public boolean removeInterrupter(Sprite sprite) {

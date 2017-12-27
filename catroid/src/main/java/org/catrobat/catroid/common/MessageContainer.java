@@ -39,8 +39,6 @@ public final class MessageContainer {
 	private static ArrayAdapter<String> messageAdapter = null;
 	private static int hiddenEntries = 0;
 
-	// BC-TODO: Clear when project is loaded
-
 	// Suppress default constructor for noninstantiability
 	private MessageContainer() {
 		throw new AssertionError();

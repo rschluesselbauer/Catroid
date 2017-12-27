@@ -606,6 +606,7 @@ public class StageListener implements ApplicationListener {
 		return broadcastWaitNotifyActions;
 	}
 
+	// BC-TODO: Fix this and StopAllScriptsAction
 	public void precomputeActionsForBroadcastEvents(Map<String, List<String>> currentActions) {
 		List<String> actions = new ArrayList<>();
 		if (currentActions.get(Constants.START_SCRIPT) != null) {

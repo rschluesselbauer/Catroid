@@ -183,12 +183,12 @@ public class ActionFactory extends Actions {
 		return action;
 	}
 
-	public static Action createBroadcastAction(Sprite senderSprite, String broadcastMessage) {
+	public static Action createBroadcastAction(Sprite senderSprite, String broadcastMessage, BroadcastEventType type) {
 		BroadcastAction action = Actions.action(BroadcastAction.class);
-		BroadcastEvent event = new BroadcastEvent();
-		event.setWaitForCompletion(false);
+		BroadcastEvent event = new BroadcastEvent(false);
 		event.setSender(senderSprite);
-		BroadcastEventIdentifier identifier = new BroadcastEventIdentifier(broadcastMessage, ProjectManager.getInstance().getCurrentScene());
+		BroadcastEventIdentifier identifier = new BroadcastEventIdentifier(broadcastMessage, ProjectManager
+				.getInstance().getCurrentScene(), type);
 		event.setEventIdentifier(identifier);
 		action.setBroadcastEvent(event);
 
@@ -197,10 +197,10 @@ public class ActionFactory extends Actions {
 
 	public Action createBroadcastActionFromWaiter(Sprite senderSprite, String broadcastMessage) {
 		BroadcastAction action = Actions.action(BroadcastAction.class);
-		BroadcastEvent event = new BroadcastEvent();
+		BroadcastEvent event = new BroadcastEvent(true);
 		event.setSender(senderSprite);
-		event.setWaitForCompletion(true);
-		BroadcastEventIdentifier identifier = new BroadcastEventIdentifier(broadcastMessage, ProjectManager.getInstance().getCurrentScene());
+		BroadcastEventIdentifier identifier = new BroadcastEventIdentifier(broadcastMessage,
+				ProjectManager.getInstance().getCurrentScene(), BroadcastEventType.DEFAULT);
 		event.setEventIdentifier(identifier);
 		action.setBroadcastEvent(event);
 		return action;

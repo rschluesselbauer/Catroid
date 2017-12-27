@@ -32,7 +32,7 @@ public class CollisionScript extends BroadcastScript {
 	private Sprite spriteToCollideWith;
 
 	public CollisionScript(Sprite spriteToCollideWith) {
-		super(spriteToCollideWith.getName());
+		super(spriteToCollideWith == null ? null : spriteToCollideWith.getName());
 		this.spriteToCollideWith = spriteToCollideWith;
 	}
 
