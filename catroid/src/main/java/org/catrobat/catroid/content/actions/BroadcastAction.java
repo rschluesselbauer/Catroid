@@ -46,7 +46,7 @@ public class BroadcastAction extends Action {
 		}
 		List<Sprite> interrupters = event.getInterrupters();
 
-		if (interrupters.size() == 0 && !executeOnce) {
+		if ((interrupters == null || interrupters.size() == 0) && !executeOnce) {
 			return true;
 		}
 		return false;
