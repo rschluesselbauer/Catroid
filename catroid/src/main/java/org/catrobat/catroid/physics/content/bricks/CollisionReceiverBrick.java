@@ -23,6 +23,7 @@
 package org.catrobat.catroid.physics.content.bricks;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -48,6 +49,8 @@ import java.util.List;
 public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick, Cloneable {
 	private static final long serialVersionUID = 1L;
 	public static final String ANYTHING_ESCAPE_CHAR = "\0";
+	private static final String TAG = CollisionReceiverBrick.class.getSimpleName();
+
 
 	private CollisionScript collisionScript;
 	ArrayAdapter<String> messageAdapter;
@@ -72,7 +75,7 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 		try {
 			super.clone();
 		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
+			Log.e(TAG, e.getMessage());
 		}
 		return new CollisionReceiverBrick(new CollisionScript(getSpriteToCollideWith()));
 	}

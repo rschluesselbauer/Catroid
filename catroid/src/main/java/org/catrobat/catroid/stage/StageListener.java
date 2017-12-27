@@ -636,7 +636,7 @@ public class StageListener implements ApplicationListener {
 		}*/
 	}
 
-	private static boolean isFirstSequenceActionAndEqualsSecond(String action1, String action2) {
+	/*private static boolean isFirstSequenceActionAndEqualsSecond(String action1, String action2) {
 		String spriteOfAction1 = action1.substring(action1.indexOf(Constants.ACTION_SPRITE_SEPARATOR));
 		String spriteOfAction2 = action2.substring(action2.indexOf(Constants.ACTION_SPRITE_SEPARATOR));
 
@@ -654,7 +654,7 @@ public class StageListener implements ApplicationListener {
 
 		String action2Sub = action2.substring(0, action2.indexOf(Constants.ACTION_SPRITE_SEPARATOR));
 		return innerAction1.equals(action2Sub);
-	}
+	}*/
 
 	private void printPhysicsLabelOnScreen() {
 		PhysicsObject tempPhysicsObject;

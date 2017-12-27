@@ -37,7 +37,6 @@ public final class MessageContainer {
 
 	private static Multimap<String, BroadcastScript> receiverMap = ArrayListMultimap.create();
 	private static ArrayAdapter<String> messageAdapter = null;
-	private static int hiddenEntries = 0;
 
 	// Suppress default constructor for noninstantiability
 	private MessageContainer() {
@@ -46,7 +45,6 @@ public final class MessageContainer {
 
 	public static void clear() {
 		receiverMap.clear();
-		hiddenEntries = 0;
 		messageAdapter = null;
 	}
 
@@ -122,7 +120,6 @@ public final class MessageContainer {
 	public static void removeUnusedMessages(List<String> usedMessages) {
 		messageAdapter = null;
 		receiverMap = ArrayListMultimap.create();
-		hiddenEntries = 0;
 
 		for (String message : usedMessages) {
 			receiverMap.put(message, null);

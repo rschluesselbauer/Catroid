@@ -67,8 +67,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-// Remove checkstyle disable when https://github.com/checkstyle/checkstyle/issues/1349 is fixed
-// CHECKSTYLE DISABLE IndentationCheck FOR 8 LINES
 @XStreamFieldKeyOrder({
 		"name",
 		"lookList",
