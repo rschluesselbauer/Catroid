@@ -21,34 +21,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.catrobat.catroid.content.actions;
+package org.catrobat.catroid.content;
 
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
-import com.badlogic.gdx.utils.Array;
-
-import org.catrobat.catroid.content.Look;
-import org.catrobat.catroid.stage.StageActivity;
-
-import java.util.List;
-import java.util.Map;
-
-public class StopAllScriptsAction extends TemporalAction {
-
-	@Override
-	protected void update(float percent) {
-		Array<Actor> stageActors = StageActivity.stageListener.getStage().getActors();
-		for (Actor actor : stageActors) {
-			for (Action action : actor.getActions()) {
-				action.reset();
-			}
-			actor.getActions().clear();
-			if (actor instanceof Look) {
-				Look look = (Look) actor;
-				Map<String, List<String>> scriptActions = look.createScriptActions();
-				StageActivity.stageListener.precomputeActionsForBroadcastEvents(scriptActions);
-			}
-		}
-	}
+public enum BroadcastEventType {
+	DEFAULT, RASPI
 }

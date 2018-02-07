@@ -155,7 +155,7 @@ public final class ProjectManager implements OnLoadProjectCompleteListener, OnCh
 			OutdatedVersionProjectException, CompatibilityProjectException {
 		fileChecksumContainer = new FileChecksumContainer();
 		Project oldProject = project;
-		MessageContainer.createBackup();
+		MessageContainer.clear();
 		project = StorageHandler.getInstance().loadProject(projectName, context);
 		StorageHandler.getInstance().fillChecksumContainer();
 
@@ -164,13 +164,14 @@ public final class ProjectManager implements OnLoadProjectCompleteListener, OnCh
 				project = oldProject;
 				currentScene = project.getDefaultScene();
 				sceneToPlay = currentScene;
-				MessageContainer.restoreBackup();
+				loadProject(oldProject.getName(), context);
+				// MessageContainer.restoreBackup();
 			} else {
 				project = Utils.findValidProject(context);
 				if (project == null) {
 					try {
 						project = DefaultProjectHandler.createAndSaveDefaultProject(context);
-						MessageContainer.clearBackup();
+						// MessageContainer.clearBackup();
 					} catch (IOException ioException) {
 						Log.e(TAG, "Cannot load project.", ioException);
 						throw new LoadingProjectException(context.getString(R.string.error_load_project));

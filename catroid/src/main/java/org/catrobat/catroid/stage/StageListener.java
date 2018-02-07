@@ -89,7 +89,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -146,7 +146,6 @@ public class StageListener implements ApplicationListener {
 	private PenActor penActor;
 
 	private List<Sprite> sprites;
-	private HashSet<Sprite> clonedSprites;
 
 	private float virtualWidthHalf;
 	private float virtualHeightHalf;
@@ -216,7 +215,6 @@ public class StageListener implements ApplicationListener {
 
 		physicsWorld = scene.resetPhysicsWorld();
 
-		clonedSprites = new HashSet<>();
 		sprites = new ArrayList<>(scene.getSpriteList());
 		boolean addPenActor = true;
 		for (Sprite sprite : sprites) {
@@ -261,7 +259,6 @@ public class StageListener implements ApplicationListener {
 		copy.look.createBrightnessContrastHueShader();
 		stage.getRoot().addActorBefore(cloneMe.look, copy.look);
 		sprites.add(copy);
-		clonedSprites.add(copy);
 
 		Map<String, List<String>> scriptActions = new HashMap<>();
 		copy.createStartScriptActionSequenceAndPutToMap(scriptActions);
@@ -273,9 +270,9 @@ public class StageListener implements ApplicationListener {
 		copy.createWhenClonedAction();
 	}
 
-	public void removeClonedSpriteFromStage(Sprite sprite) {
+	public boolean removeClonedSpriteFromStage(Sprite sprite) {
 		if (!sprite.isClone()) {
-			return;
+			return false;
 		}
 		Scene currentScene = ProjectManager.getInstance().getSceneToPlay();
 		DataContainer userVariables = currentScene.getDataContainer();
@@ -291,13 +288,14 @@ public class StageListener implements ApplicationListener {
 		}
 		sprite.look.setLookVisible(false);
 		sprite.look.remove();
-		sprites.remove(sprite);
-		clonedSprites.remove(sprite);
+		return sprites.remove(sprite);
 	}
 
 	public void removeAllClonedSpritesFromStage() {
-		for (Sprite sprite : clonedSprites) {
-			removeClonedSpriteFromStage(sprite);
+		for (int index = 0; index < sprites.size(); index++) {
+			if (removeClonedSpriteFromStage(sprites.get(index))) {
+				index--;
+			}
 		}
 	}
 
@@ -401,11 +399,6 @@ public class StageListener implements ApplicationListener {
 		}
 		stageBackupMap.clear();
 
-		for (Scene scene : ProjectManager.getInstance().getCurrentProject().getSceneList()) {
-			scene.firstStart = true;
-			scene.getDataContainer().resetAllDataObjects();
-		}
-
 		FlashUtil.reset();
 		VibratorUtil.reset();
 		TouchUtil.reset();
@@ -413,6 +406,10 @@ public class StageListener implements ApplicationListener {
 
 		removeAllClonedSpritesFromStage();
 
+		for (Scene scene : ProjectManager.getInstance().getCurrentProject().getSceneList()) {
+			scene.firstStart = true;
+			scene.getDataContainer().resetAllDataObjects();
+		}
 		reloadProject = true;
 	}
 
@@ -496,11 +493,9 @@ public class StageListener implements ApplicationListener {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 
 		if (scene.firstStart) {
-			int spriteSize = sprites.size();
-
 			Map<String, List<String>> scriptActions = new HashMap<>();
-			for (int currentSprite = 0; currentSprite < spriteSize; currentSprite++) {
-				Sprite sprite = sprites.get(currentSprite);
+			for (Iterator<Sprite> iterator = sprites.iterator(); iterator.hasNext(); ) {
+				Sprite sprite = iterator.next();
 				sprite.createStartScriptActionSequenceAndPutToMap(scriptActions);
 				if (!sprite.getLookDataList().isEmpty()) {
 					sprite.look.setLookData(sprite.getLookDataList().get(0));
@@ -606,6 +601,7 @@ public class StageListener implements ApplicationListener {
 		return broadcastWaitNotifyActions;
 	}
 
+	// BC-TODO: Fix this and StopAllScriptsAction
 	public void precomputeActionsForBroadcastEvents(Map<String, List<String>> currentActions) {
 		List<String> actions = new ArrayList<>();
 		if (currentActions.get(Constants.START_SCRIPT) != null) {
@@ -635,7 +631,7 @@ public class StageListener implements ApplicationListener {
 		}*/
 	}
 
-	private static boolean isFirstSequenceActionAndEqualsSecond(String action1, String action2) {
+	/*private static boolean isFirstSequenceActionAndEqualsSecond(String action1, String action2) {
 		String spriteOfAction1 = action1.substring(action1.indexOf(Constants.ACTION_SPRITE_SEPARATOR));
 		String spriteOfAction2 = action2.substring(action2.indexOf(Constants.ACTION_SPRITE_SEPARATOR));
 
@@ -653,7 +649,7 @@ public class StageListener implements ApplicationListener {
 
 		String action2Sub = action2.substring(0, action2.indexOf(Constants.ACTION_SPRITE_SEPARATOR));
 		return innerAction1.equals(action2Sub);
-	}
+	}*/
 
 	private void printPhysicsLabelOnScreen() {
 		PhysicsObject tempPhysicsObject;

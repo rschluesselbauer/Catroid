@@ -23,22 +23,6 @@
 package org.catrobat.catroid.test.physics;
 
 import android.test.InstrumentationTestCase;
-import android.util.Log;
-
-import junit.framework.Assert;
-
-import org.catrobat.catroid.ProjectManager;
-import org.catrobat.catroid.content.CollisionScript;
-import org.catrobat.catroid.content.Project;
-import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.SingleSprite;
-import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.StartScript;
-import org.catrobat.catroid.io.StorageHandler;
-import org.catrobat.catroid.physics.PhysicsCollision;
-import org.catrobat.catroid.physics.content.bricks.SetPhysicsObjectTypeBrick;
-import org.catrobat.catroid.test.utils.Reflection;
-import org.catrobat.catroid.test.utils.TestUtils;
 
 public class PhysicsCollisionScriptInteractionTest extends InstrumentationTestCase {
 
@@ -73,7 +57,7 @@ public class PhysicsCollisionScriptInteractionTest extends InstrumentationTestCa
 		Script firstSpriteStartScript = new StartScript();
 		firstSpriteStartScript.addBrick(new SetPhysicsObjectTypeBrick());
 		firstSpriteCollisionScript = new CollisionScript("");
-		firstSpriteCollisionScript.setAndReturnBroadcastMessage(FIRST_SPRITE_NAME, SECOND_SPRITE_NAME);
+		firstSpriteCollisionScript.setSpriteToCollideWith(FIRST_SPRITE_NAME, SECOND_SPRITE_NAME);
 		firstSpriteCollisionScript.getScriptBrick();
 		firstSprite.addScript(firstSpriteStartScript);
 		firstSprite.addScript(firstSpriteCollisionScript);
@@ -83,7 +67,7 @@ public class PhysicsCollisionScriptInteractionTest extends InstrumentationTestCa
 		Script secondSpriteStartScript = new StartScript();
 		secondSpriteStartScript.addBrick(new SetPhysicsObjectTypeBrick());
 		secondSpriteCollisionScript = new CollisionScript("");
-		secondSpriteCollisionScript.setAndReturnBroadcastMessage(SECOND_SPRITE_NAME, FIRST_SPRITE_NAME);
+		secondSpriteCollisionScript.setSpriteToCollideWith(SECOND_SPRITE_NAME, FIRST_SPRITE_NAME);
 		secondSpriteCollisionScript.getScriptBrick();
 		secondSprite.addScript(secondSpriteStartScript);
 		secondSprite.addScript(secondSpriteCollisionScript);

@@ -591,7 +591,6 @@ public final class StorageHandler {
 			Log.d(TAG, "Directory does not exist!");
 			return null;
 		}
-
 		try {
 			if (!checkIfProjectHasScenes(projectName)) {
 				return loadSupportProject(projectName, context);

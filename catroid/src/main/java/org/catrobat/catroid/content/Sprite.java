@@ -41,6 +41,7 @@ import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.LookData;
 import org.catrobat.catroid.common.NfcTagData;
 import org.catrobat.catroid.common.SoundInfo;
+import org.catrobat.catroid.content.actions.BroadcastSequenceAction;
 import org.catrobat.catroid.content.bricks.ArduinoSendPWMValueBrick;
 import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.FormulaBrick;
@@ -66,8 +67,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-// Remove checkstyle disable when https://github.com/checkstyle/checkstyle/issues/1349 is fixed
-// CHECKSTYLE DISABLE IndentationCheck FOR 8 LINES
 @XStreamFieldKeyOrder({
 		"name",
 		"lookList",
@@ -87,7 +86,7 @@ public class Sprite implements Serializable, Cloneable {
 	public transient PenConfiguration penConfiguration = new PenConfiguration();
 	private transient boolean convertToSingleSprite = false;
 	private transient boolean convertToGroupItemSprite = false;
-	private transient Multimap<EventIdentifier, Script> broadcastScriptMap = HashMultimap.create();
+	private transient Multimap<EventIdentifier, BroadcastSequenceAction> broadcastSequenceActionMap = HashMultimap.create();
 
 	@XStreamAsAttribute
 	private String name;
@@ -243,21 +242,25 @@ public class Sprite implements Serializable, Cloneable {
 			if (script instanceof StartScript && !isClone && includeStartScripts) {
 				Action sequenceAction = createActionSequence(script);
 				look.addAction(sequenceAction);
-				//BroadcastHandler.getActionScriptMap().put(sequenceAction, script);
-				// BroadcastHandler.getScriptSpriteMap().put(script, this);
 				String actionName = sequenceAction.toString() + Constants.ACTION_SPRITE_SEPARATOR + name + scriptCounter;
 				if (scriptActions.containsKey(Constants.START_SCRIPT)) {
 					scriptActions.get(Constants.START_SCRIPT).add(actionName);
-					// BroadcastHandler.getStringActionMap().put(actionName, sequenceAction);
 				} else {
 					List<String> startScriptList = new ArrayList<>();
 					startScriptList.add(actionName);
 					scriptActions.put(Constants.START_SCRIPT, startScriptList);
-					//BroadcastHandler.getStringActionMap().put(actionName, sequenceAction);
 				}
+			} else if (script instanceof CollisionScript) {
+				CollisionScript collisionScript = (CollisionScript) script;
+				EventIdentifier identifier = new CollisionEventIdentifier(this, collisionScript
+						.getSpriteToCollideWith(), ProjectManager.getInstance().getSceneToPlay());
+
+				broadcastSequenceActionMap.put(identifier, createBroadcastActionSequence(script));
 			} else if (script instanceof BroadcastScript) {
 				BroadcastScript broadcastScript = (BroadcastScript) script;
-				putBroadcastSequenceAction(broadcastScript.getBroadcastMessage(), script);
+				EventIdentifier identifier = new BroadcastEventIdentifier(broadcastScript.getBroadcastMessage(),
+						ProjectManager.getInstance().getSceneToPlay(), BroadcastEventType.RASPI);
+				broadcastSequenceActionMap.put(identifier, createBroadcastActionSequence(script));
 			} else if (script instanceof WhenConditionScript) {
 				createWhenConditionBecomesTrueAction((WhenConditionScript) script);
 			}
@@ -286,11 +289,6 @@ public class Sprite implements Serializable, Cloneable {
 
 		Action whenConditionBecomesTrueAction = actionFactory.createForeverAction(this, foreverSequence);
 		look.addAction(whenConditionBecomesTrueAction);
-	}
-
-	private void putBroadcastSequenceAction(String broadcastMessage, Script script) {
-		EventIdentifier identifier = new BroadcastEventIdentifier(broadcastMessage, ProjectManager.getInstance().getSceneToPlay());
-		broadcastScriptMap.put(identifier, script);
 	}
 
 	public ActionFactory getActionFactory() {
@@ -347,7 +345,7 @@ public class Sprite implements Serializable, Cloneable {
 		cloneSprite.soundList = this.soundList;
 		cloneSprite.nfcTagList = this.nfcTagList;
 
-		cloneSprite.broadcastScriptMap = this.broadcastScriptMap;
+		cloneSprite.broadcastSequenceActionMap = HashMultimap.create();
 
 		Sprite originalSprite = ProjectManager.getInstance().getCurrentSprite();
 		ProjectManager.getInstance().setCurrentSprite(cloneSprite);
@@ -380,7 +378,7 @@ public class Sprite implements Serializable, Cloneable {
 		cloneSprite.soundList = this.soundList;
 		cloneSprite.userBricks = this.userBricks;
 		cloneSprite.nfcTagList = this.nfcTagList;
-		cloneSprite.broadcastScriptMap = this.broadcastScriptMap;
+		cloneSprite.broadcastSequenceActionMap = this.broadcastSequenceActionMap;
 
 		ProjectManager projectManager = ProjectManager.getInstance();
 
@@ -562,6 +560,12 @@ public class Sprite implements Serializable, Cloneable {
 		}
 		look.setWhenParallelAction(whenParallelAction);
 		look.addAction(whenParallelAction);
+	}
+
+	private BroadcastSequenceAction createBroadcastActionSequence(Script script) {
+		BroadcastSequenceAction sequence = (BroadcastSequenceAction) ActionFactory.createBroadcastSequence(script);
+		script.run(this, sequence);
+		return sequence;
 	}
 
 	public SequenceAction createActionSequence(Script script) {
@@ -764,17 +768,6 @@ public class Sprite implements Serializable, Cloneable {
 		}
 		setName(newSpriteName);
 	}
-
-	// BC-TODO: Checken ob nötig
-	/*public void updateCollisionBroadcastMessages(String oldCollisionObjectIdentifier, String
-			newCollisionObjectIdentifier) {
-		for (int scriptIndex = 0; scriptIndex < getNumberOfScripts(); scriptIndex++) {
-			Script currentScript = getScript(scriptIndex);
-			if (currentScript instanceof CollisionScript) {
-				((CollisionScript) currentScript).updateBroadcastMessage(oldCollisionObjectIdentifier, newCollisionObjectIdentifier);
-			}
-		}
-	}*/
 
 	public boolean containsLookData(LookData lookData) {
 		for (LookData lookOfSprite : lookList) {
@@ -984,7 +977,7 @@ public class Sprite implements Serializable, Cloneable {
 		return isClone;
 	}
 
-	public Multimap<EventIdentifier, Script> getBroadcastScriptMap() {
-		return broadcastScriptMap;
+	public Multimap<EventIdentifier, BroadcastSequenceAction> getBroadcastSequenceActionMap() {
+		return broadcastSequenceActionMap;
 	}
 }
