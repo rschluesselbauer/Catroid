@@ -184,6 +184,9 @@ public class Look extends Image {
 				sprite.createWhenScriptActionSequence("Tapped");
 			} else {
 				whenParallelAction.restart();
+				if (!getActions().contains(whenParallelAction, true)) {
+					addAction(whenParallelAction);
+				}
 			}
 			return true;
 		}
