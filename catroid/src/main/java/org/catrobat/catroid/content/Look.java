@@ -109,31 +109,31 @@ public class Look extends Image {
 			@Override
 			public void handleBroadcastEvent(BroadcastEvent event) {
 				Sprite handlingSprite = Look.this.sprite;
-				Collection<Script> scripts = handlingSprite.getBroadcastScriptMap().get(event.getEventIdentifier());
-				for (Script script : scripts) {
-					BroadcastSequenceAction actionToBeAdded = createBroadcastActionSequence(handlingSprite, script);
+
+				Collection<BroadcastSequenceAction> sequenceActions = handlingSprite.getBroadcastSequenceActionMap().get(event.getEventIdentifier());
+				for (BroadcastSequenceAction actionToBeAdded : sequenceActions) {
 					if (event.waitForCompletion()) {
 						event.addInterrupter(handlingSprite);
 						actionToBeAdded.addAction(ActionFactory.createBroadcastNotifyAction(handlingSprite, event));
 					}
-					restartAction(actionToBeAdded);
+					stopActionWithScript(actionToBeAdded.getScript());
+					startAction(actionToBeAdded);
 				}
 			}
 
-			private void restartAction(BroadcastSequenceAction actionToBeAdded) {
+			private void stopActionWithScript(Script script) {
 				for (Action action : Look.this.getActions()) {
-					if (action instanceof BroadcastSequenceAction && ((BroadcastSequenceAction) action).getScript() == actionToBeAdded.getScript()) {
-						action.restart();
+					if (action instanceof BroadcastSequenceAction
+							&& ((BroadcastSequenceAction) action).getScript() == script) {
+						Look.actionsToRestartAdd(action);
 						return;
 					}
 				}
-				Look.this.addAction(actionToBeAdded);
 			}
 
-			private BroadcastSequenceAction createBroadcastActionSequence(Sprite sprite, Script script) {
-				BroadcastSequenceAction sequence = (BroadcastSequenceAction) ActionFactory.createBroadcastSequence(script);
-				script.run(sprite, sequence);
-				return sequence;
+			private void startAction(BroadcastSequenceAction actionToBeAdded) {
+				Look.actionsToRestartAdd(actionToBeAdded);
+				Look.this.addAction(actionToBeAdded);
 			}
 		});
 	}
