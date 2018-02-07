@@ -36,7 +36,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.ParallelAction;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -44,9 +43,11 @@ import com.badlogic.gdx.utils.Array;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.common.DroneVideoLookData;
 import org.catrobat.catroid.common.LookData;
+import org.catrobat.catroid.content.actions.BroadcastSequenceAction;
 import org.catrobat.catroid.utils.TouchUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -107,7 +108,32 @@ public class Look extends Image {
 		this.addListener(new BroadcastListener() {
 			@Override
 			public void handleBroadcastEvent(BroadcastEvent event) {
-				Look.this.handleBroadcastEvent(event);
+				Sprite handlingSprite = Look.this.sprite;
+				Collection<Script> scripts = handlingSprite.getBroadcastScriptMap().get(event.getEventIdentifier());
+				for (Script script : scripts) {
+					BroadcastSequenceAction actionToBeAdded = createBroadcastActionSequence(handlingSprite, script);
+					if (event.waitForCompletion()) {
+						event.addInterrupter(handlingSprite);
+						actionToBeAdded.addAction(ActionFactory.createBroadcastNotifyAction(handlingSprite, event));
+					}
+					restartAction(actionToBeAdded);
+				}
+			}
+
+			private void restartAction(BroadcastSequenceAction actionToBeAdded) {
+				for (Action action : Look.this.getActions()) {
+					if (action instanceof BroadcastSequenceAction && ((BroadcastSequenceAction) action).getScript() == actionToBeAdded.getScript()) {
+						action.restart();
+						return;
+					}
+				}
+				Look.this.addAction(actionToBeAdded);
+			}
+
+			private BroadcastSequenceAction createBroadcastActionSequence(Sprite sprite, Script script) {
+				BroadcastSequenceAction sequence = (BroadcastSequenceAction) ActionFactory.createBroadcastSequence(script);
+				script.run(sprite, sequence);
+				return sequence;
 			}
 		});
 	}
@@ -124,7 +150,7 @@ public class Look extends Image {
 		return Look.actionsToRestart.contains(action);
 	}
 
-	public static void actionsToRestartAdd(Action action) {
+	static void actionsToRestartAdd(Action action) {
 		Look.actionsToRestart.add(action);
 	}
 
@@ -552,14 +578,6 @@ public class Look extends Image {
 	protected float convertStageAngleToCatroidAngle(float stageAngle) {
 		float catroidAngle = -stageAngle + DEGREE_UI_OFFSET;
 		return breakDownCatroidAngle(catroidAngle);
-	}
-
-	protected void handleBroadcastEvent(BroadcastEvent broadcastEvent) {
-		BroadcastHandler.handleBroadcastEvent(this, broadcastEvent);
-	}
-
-	protected void doHandleBroadcastFromWaiterEvent(BroadcastEvent event, String broadcastMessage) {
-		// BroadcastHandler.doHandleBroadcastFromWaiterEvent(this, event, broadcastMessage);
 	}
 
 	private class BrightnessContrastHueShader extends ShaderProgram {
