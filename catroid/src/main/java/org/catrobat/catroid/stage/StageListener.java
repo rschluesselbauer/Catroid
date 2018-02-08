@@ -261,7 +261,6 @@ public class StageListener implements ApplicationListener {
 		sprites.add(copy);
 
 		copy.initializeActionsIncludingStartActions(true);
-		//precomputeActionsForBroadcastEvents(scriptActions);
 		if (!copy.getLookDataList().isEmpty()) {
 			copy.look.setLookData(copy.getLookDataList().get(0));
 		}
@@ -296,6 +295,7 @@ public class StageListener implements ApplicationListener {
 				index--;
 			}
 		}
+		StageActivity.resetNumberOfClonedSprites();
 	}
 
 	private void disposeClonedSprites() {
@@ -378,10 +378,7 @@ public class StageListener implements ApplicationListener {
 			return;
 		}
 		transitionToScene(sceneName);
-		// BC-TODO: Wozu sollte man clearen?
-		/*for (Sprite sprite : sceneToStart.getSpriteList()) {
-			sprite.getBroadcastScriptMap().clearScene(sceneName);
-		}*/
+
 		SoundManager.getInstance().clear();
 		stageBackupMap.remove(sceneName);
 		scene.firstStart = true;
@@ -402,7 +399,6 @@ public class StageListener implements ApplicationListener {
 		VibratorUtil.reset();
 		TouchUtil.reset();
 		BackgroundWaitHandler.reset();
-
 		removeAllClonedSpritesFromStage();
 
 		for (Scene scene : ProjectManager.getInstance().getCurrentProject().getSceneList()) {

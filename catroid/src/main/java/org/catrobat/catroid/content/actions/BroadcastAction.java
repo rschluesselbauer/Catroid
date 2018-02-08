@@ -24,9 +24,9 @@ package org.catrobat.catroid.content.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 
-import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.BroadcastEvent;
 import org.catrobat.catroid.content.Sprite;
+import org.catrobat.catroid.stage.StageActivity;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class BroadcastAction extends Action {
 	public boolean act(float delta) {
 		if (executeOnce) {
 			executeOnce = false;
-			List<Sprite> sprites = ProjectManager.getInstance().getSceneToPlay().getSpriteList();
+			List<Sprite> sprites = StageActivity.stageListener.getSpritesFromStage();
 			for (Sprite spriteOfList : sprites) {
 				spriteOfList.look.fire(event);
 			}
