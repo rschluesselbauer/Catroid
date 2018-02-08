@@ -43,9 +43,6 @@ import org.catrobat.catroid.formulaeditor.FormulaElement.ElementType;
 import org.catrobat.catroid.formulaeditor.Operators;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 
-import java.util.HashMap;
-import java.util.List;
-
 public class RepeatUntilActionTest extends InstrumentationTestCase {
 
 	private static final String NOT_NUMERICAL_STRING = "NOT_NUMERICAL_STRING";
@@ -112,7 +109,7 @@ public class RepeatUntilActionTest extends InstrumentationTestCase {
 		testScript.addBrick(loopEndBrick);
 
 		testSprite.addScript(testScript);
-		testSprite.createStartScriptActionSequenceAndPutToMap(new HashMap<String, List<String>>());
+		testSprite.initializeActionsIncludingStartActions(true);
 
 		while (!testSprite.look.getAllActionsAreFinished()) {
 			testSprite.look.act(1.0f);
@@ -161,7 +158,7 @@ public class RepeatUntilActionTest extends InstrumentationTestCase {
 		testScript.addBrick(new ChangeYByNBrick(delta));
 		testScript.addBrick(loopEndBrick);
 		testSprite.addScript(testScript);
-		testSprite.createStartScriptActionSequenceAndPutToMap(new HashMap<String, List<String>>());
+		testSprite.initializeActionsIncludingStartActions(true);
 
 		while (!testSprite.look.getAllActionsAreFinished()) {
 			testSprite.look.act(1.0f);
@@ -186,7 +183,7 @@ public class RepeatUntilActionTest extends InstrumentationTestCase {
 		testScript.addBrick(loopEndBrick);
 
 		testSprite.addScript(testScript);
-		testSprite.createStartScriptActionSequenceAndPutToMap(new HashMap<String, List<String>>());
+		testSprite.initializeActionsIncludingStartActions(true);
 
 		while (!testSprite.look.getAllActionsAreFinished()) {
 			testSprite.look.act(1.0f);

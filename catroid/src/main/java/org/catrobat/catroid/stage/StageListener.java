@@ -260,9 +260,8 @@ public class StageListener implements ApplicationListener {
 		stage.getRoot().addActorBefore(cloneMe.look, copy.look);
 		sprites.add(copy);
 
-		Map<String, List<String>> scriptActions = new HashMap<>();
-		copy.createStartScriptActionSequenceAndPutToMap(scriptActions);
-		precomputeActionsForBroadcastEvents(scriptActions);
+		copy.initializeActionsIncludingStartActions(true);
+		//precomputeActionsForBroadcastEvents(scriptActions);
 		if (!copy.getLookDataList().isEmpty()) {
 			copy.look.setLookData(copy.getLookDataList().get(0));
 		}
@@ -493,22 +492,13 @@ public class StageListener implements ApplicationListener {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 
 		if (scene.firstStart) {
-			Map<String, List<String>> scriptActions = new HashMap<>();
 			for (Iterator<Sprite> iterator = sprites.iterator(); iterator.hasNext(); ) {
 				Sprite sprite = iterator.next();
-				sprite.createStartScriptActionSequenceAndPutToMap(scriptActions);
+				sprite.initializeActionsIncludingStartActions(true);
 				if (!sprite.getLookDataList().isEmpty()) {
 					sprite.look.setLookData(sprite.getLookDataList().get(0));
 				}
 			}
-
-			if (scriptActions.get(Constants.BROADCAST_SCRIPT) != null && !scriptActions.get(Constants.BROADCAST_SCRIPT).isEmpty()) {
-				List<String> broadcastWaitNotifyActions = reconstructNotifyActions(scriptActions);
-				Map<String, List<String>> notifyMap = new HashMap<>();
-				notifyMap.put(Constants.BROADCAST_NOTIFY_ACTION, broadcastWaitNotifyActions);
-				scriptActions.putAll(notifyMap);
-			}
-			precomputeActionsForBroadcastEvents(scriptActions);
 			scene.firstStart = false;
 		}
 		if (!paused) {
@@ -591,65 +581,6 @@ public class StageListener implements ApplicationListener {
 			drawDebugCollisionPolygons();
 		}
 	}
-
-	private List<String> reconstructNotifyActions(Map<String, List<String>> actions) {
-		List<String> broadcastWaitNotifyActions = new ArrayList<>();
-		for (String actionString : actions.get(Constants.BROADCAST_SCRIPT)) {
-			String broadcastNotifyString = SEQUENCE + actionString.substring(0, actionString.indexOf(Constants.ACTION_SPRITE_SEPARATOR)) + BROADCAST_NOTIFY + actionString.substring(actionString.indexOf(Constants.ACTION_SPRITE_SEPARATOR));
-			broadcastWaitNotifyActions.add(broadcastNotifyString);
-		}
-		return broadcastWaitNotifyActions;
-	}
-
-	// BC-TODO: Fix this and StopAllScriptsAction
-	public void precomputeActionsForBroadcastEvents(Map<String, List<String>> currentActions) {
-		List<String> actions = new ArrayList<>();
-		if (currentActions.get(Constants.START_SCRIPT) != null) {
-			actions.addAll(currentActions.get(Constants.START_SCRIPT));
-		}
-		if (currentActions.get(Constants.BROADCAST_SCRIPT) != null) {
-			actions.addAll(currentActions.get(Constants.BROADCAST_SCRIPT));
-		}
-		if (currentActions.get(Constants.BROADCAST_NOTIFY_ACTION) != null) {
-			actions.addAll(currentActions.get(Constants.BROADCAST_NOTIFY_ACTION));
-		}
-		if (currentActions.get(Constants.RASPI_SCRIPT) != null) {
-			actions.addAll(currentActions.get(Constants.RASPI_SCRIPT));
-		}
-		/*for (String action : actions) {
-			for (String actionOfLook : actions) {
-				if (action.equals(actionOfLook)
-						|| isFirstSequenceActionAndEqualsSecond(action, actionOfLook)
-						|| isFirstSequenceActionAndEqualsSecond(actionOfLook, action)) {
-					if (!actionsToRestartMap.containsKey(action)) {
-						actionsToRestartMap.put(action, actionOfLook);
-					} else {
-						actionsToRestartMap.get(action).add(actionOfLook);
-					}
-				}
-			}
-		}*/
-	}
-
-	/*private static boolean isFirstSequenceActionAndEqualsSecond(String action1, String action2) {
-		String spriteOfAction1 = action1.substring(action1.indexOf(Constants.ACTION_SPRITE_SEPARATOR));
-		String spriteOfAction2 = action2.substring(action2.indexOf(Constants.ACTION_SPRITE_SEPARATOR));
-
-		if (!spriteOfAction1.equals(spriteOfAction2)) {
-			return false;
-		}
-
-		if (!action1.startsWith(SEQUENCE) || !action1.contains(BROADCAST_NOTIFY)) {
-			return false;
-		}
-
-		int startIndex1 = action1.indexOf(Constants.OPENING_BRACE) + 1;
-		int endIndex1 = action1.indexOf(BROADCAST_NOTIFY);
-		String innerAction1 = action1.substring(startIndex1, endIndex1);
-
-		String action2Sub = action2.substring(0, action2.indexOf(Constants.ACTION_SPRITE_SEPARATOR));
-		return innerAction1.equals(action2Sub);
-	}*/
 
 	private void printPhysicsLabelOnScreen() {
 		PhysicsObject tempPhysicsObject;

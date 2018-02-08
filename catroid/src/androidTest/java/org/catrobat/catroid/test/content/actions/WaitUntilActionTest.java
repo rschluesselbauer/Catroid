@@ -34,9 +34,6 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.Operators;
 
-import java.util.HashMap;
-import java.util.List;
-
 public class WaitUntilActionTest extends AndroidTestCase {
 
 	private Sprite testSprite;
@@ -85,7 +82,7 @@ public class WaitUntilActionTest extends AndroidTestCase {
 		project.getDefaultScene().addSprite(testSprite);
 		ProjectManager.getInstance().setCurrentSprite(testSprite);
 		ProjectManager.getInstance().setCurrentScript(testScript);
-		testSprite.createStartScriptActionSequenceAndPutToMap(new HashMap<String, List<String>>());
+		testSprite.initializeActionsIncludingStartActions(true);
 
 		testSprite.look.act(100f);
 	}

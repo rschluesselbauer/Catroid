@@ -34,9 +34,6 @@ import org.catrobat.catroid.formulaeditor.Formula;
 import org.catrobat.catroid.formulaeditor.FormulaElement;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 
-import java.util.HashMap;
-import java.util.List;
-
 public class WhenConditionBecomesTrueActionTest extends AndroidTestCase {
 
 	private Sprite testSprite;
@@ -142,7 +139,7 @@ public class WhenConditionBecomesTrueActionTest extends AndroidTestCase {
 		project.getDefaultScene().addSprite(testSprite);
 		ProjectManager.getInstance().setCurrentSprite(testSprite);
 		ProjectManager.getInstance().setCurrentScript(whenConditionScript);
-		testSprite.createStartScriptActionSequenceAndPutToMap(new HashMap<String, List<String>>());
+		testSprite.initializeActionsIncludingStartActions(true);
 	}
 
 	private void runScriptAndTriggerCondition(int timesToTrigger) {

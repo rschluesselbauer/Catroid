@@ -44,9 +44,6 @@ import org.catrobat.catroid.formulaeditor.Operators;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.test.utils.Reflection;
 
-import java.util.HashMap;
-import java.util.List;
-
 public class IfLogicActionTest extends AndroidTestCase {
 
 	private static final int IF_TRUE_VALUE = 42;
@@ -111,7 +108,7 @@ public class IfLogicActionTest extends AndroidTestCase {
 		ProjectManager.getInstance().setCurrentSprite(testSprite);
 		ProjectManager.getInstance().setCurrentScript(testScript);
 
-		testSprite.createStartScriptActionSequenceAndPutToMap(new HashMap<String, List<String>>());
+		testSprite.initializeActionsIncludingStartActions(true);
 		while (!testSprite.look.getAllActionsAreFinished()) {
 			testSprite.look.act(1f);
 		}
@@ -143,7 +140,7 @@ public class IfLogicActionTest extends AndroidTestCase {
 		project.getDefaultScene().addSprite(testSprite);
 		ProjectManager.getInstance().setCurrentSprite(testSprite);
 		ProjectManager.getInstance().setCurrentScript(testScript);
-		testSprite.createStartScriptActionSequenceAndPutToMap(new HashMap<String, List<String>>());
+		testSprite.initializeActionsIncludingStartActions(true);
 		testSprite.look.act(100f);
 
 		userVariable = ProjectManager.getInstance().getCurrentScene().getDataContainer()
@@ -173,7 +170,7 @@ public class IfLogicActionTest extends AndroidTestCase {
 		project.getDefaultScene().addSprite(testSprite);
 		ProjectManager.getInstance().setCurrentSprite(testSprite);
 		ProjectManager.getInstance().setCurrentScript(testScript);
-		testSprite.createStartScriptActionSequenceAndPutToMap(new HashMap<String, List<String>>());
+		testSprite.initializeActionsIncludingStartActions(true);
 		testSprite.look.act(100f);
 
 		userVariable = ProjectManager.getInstance().getCurrentScene().getDataContainer()
@@ -228,7 +225,7 @@ public class IfLogicActionTest extends AndroidTestCase {
 		project.getDefaultScene().addSprite(testSprite);
 		ProjectManager.getInstance().setCurrentSprite(testSprite);
 		ProjectManager.getInstance().setCurrentScript(testScript);
-		testSprite.createStartScriptActionSequenceAndPutToMap(new HashMap<String, List<String>>());
+		testSprite.initializeActionsIncludingStartActions(true);
 		testSprite.look.act(1f);
 		userVariable = ProjectManager.getInstance().getCurrentScene().getDataContainer()
 				.getUserVariable(null, TEST_USERVARIABLE);

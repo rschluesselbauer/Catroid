@@ -48,10 +48,7 @@ import org.catrobat.catroid.utils.TouchUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class Look extends Image {
 	private static final float DEGREE_UI_OFFSET = 90.0f;
@@ -134,14 +131,14 @@ public class Look extends Image {
 				for (Action action : Look.this.getActions()) {
 					if (action instanceof BroadcastSequenceAction
 							&& ((BroadcastSequenceAction) action).getScript() == script) {
-						Look.actionsToRestartAdd(action);
+						Look.this.getActions().removeValue(action, true);
 						return;
 					}
 				}
 			}
 
 			private void startAction(BroadcastSequenceAction actionToBeAdded) {
-				Look.actionsToRestartAdd(actionToBeAdded);
+				actionToBeAdded.restart();
 				Look.this.addAction(actionToBeAdded);
 			}
 		});
@@ -592,6 +589,10 @@ public class Look extends Image {
 		return breakDownCatroidAngle(catroidAngle);
 	}
 
+	public void initializeActionsIncludingStartActions(boolean includeStartActions) {
+		sprite.initializeActionsIncludingStartActions(includeStartActions);
+	}
+
 	private class BrightnessContrastHueShader extends ShaderProgram {
 
 		private static final String VERTEX_SHADER = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n"
@@ -667,13 +668,6 @@ public class Look extends Image {
 			setUniformf(HUE_STRING_IN_SHADER, hue);
 			end();
 		}
-	}
-
-	public Map<String, List<String>> createScriptActions() {
-		this.setWhenParallelAction(null);
-		Map<String, List<String>> scriptActions = new HashMap<>();
-		sprite.createStartScriptActionSequenceAndPutToMap(scriptActions, false);
-		return scriptActions;
 	}
 
 	public Polygon[] getCurrentCollisionPolygon() {
