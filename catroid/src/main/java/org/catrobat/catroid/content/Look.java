@@ -114,11 +114,20 @@ public class Look extends Image {
 				for (BroadcastSequenceAction actionToBeAdded : sequenceActions) {
 					if (event.waitForCompletion()) {
 						event.addInterrupter(handlingSprite);
+						actionToBeAdded = shallowCopyOfBroadcastSequenceAction(actionToBeAdded);
 						actionToBeAdded.addAction(ActionFactory.createBroadcastNotifyAction(handlingSprite, event));
 					}
 					stopActionWithScript(actionToBeAdded.getScript());
 					startAction(actionToBeAdded);
 				}
+			}
+
+			BroadcastSequenceAction shallowCopyOfBroadcastSequenceAction(BroadcastSequenceAction actionToBeCopied) {
+				BroadcastSequenceAction copy = (BroadcastSequenceAction) ActionFactory.createBroadcastSequence(actionToBeCopied.getScript());
+				for (Action childAction : actionToBeCopied.getActions()) {
+					copy.addAction(childAction);
+				}
+				return copy;
 			}
 
 			private void stopActionWithScript(Script script) {

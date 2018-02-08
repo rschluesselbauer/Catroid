@@ -239,6 +239,9 @@ public class Sprite implements Serializable, Cloneable {
 			boolean includeStartScripts) {
 		for (int scriptCounter = 0; scriptCounter < scriptList.size(); scriptCounter++) {
 			Script script = scriptList.get(scriptCounter);
+			if (script.isCommentedOut()) {
+				continue;
+			}
 			if (script instanceof StartScript && !isClone && includeStartScripts) {
 				Action sequenceAction = createActionSequence(script);
 				look.addAction(sequenceAction);
