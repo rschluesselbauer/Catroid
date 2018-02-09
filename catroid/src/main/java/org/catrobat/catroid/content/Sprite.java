@@ -238,6 +238,7 @@ public class Sprite implements Serializable, Cloneable {
 	}
 
 	public void initializeActionsIncludingStartActions(boolean includeStartActions) {
+		broadcastSequenceActionMap.clear();
 		for (Script script : scriptList) {
 			if (script.isCommentedOut()) {
 				continue;
@@ -245,6 +246,8 @@ public class Sprite implements Serializable, Cloneable {
 				initializeActionByStartScript(script);
 			} else if (script instanceof CollisionScript) {
 				initializeActionByCollisionScript((CollisionScript) script);
+			} else if (script instanceof RaspiInterruptScript) {
+				initializeActionByRaspiInterruptScript((RaspiInterruptScript) script);
 			} else if (script instanceof BroadcastScript) {
 				initializeActionByBroadcastScript((BroadcastScript) script);
 			} else if (script instanceof WhenConditionScript) {
@@ -260,13 +263,18 @@ public class Sprite implements Serializable, Cloneable {
 
 	private void initializeActionByBroadcastScript(BroadcastScript broadcastScript) {
 		EventIdentifier identifier = new BroadcastEventIdentifier(broadcastScript.getBroadcastMessage(),
-				ProjectManager.getInstance().getSceneToPlay(), BroadcastEventType.DEFAULT);
+				BroadcastEventType.DEFAULT);
 		broadcastSequenceActionMap.put(identifier, createBroadcastActionSequence(broadcastScript));
+	}
+
+	private void initializeActionByRaspiInterruptScript(RaspiInterruptScript raspiScript) {
+		EventIdentifier identifier = new RaspiEventIdentifier(raspiScript.getPin(), raspiScript.getEventValue());
+		broadcastSequenceActionMap.put(identifier, createBroadcastActionSequence(raspiScript));
 	}
 
 	private void initializeActionByCollisionScript(CollisionScript collisionScript) {
 		EventIdentifier identifier = new CollisionEventIdentifier(this, collisionScript
-				.getSpriteToCollideWith(), ProjectManager.getInstance().getSceneToPlay());
+				.getSpriteToCollideWith());
 		broadcastSequenceActionMap.put(identifier, createBroadcastActionSequence(collisionScript));
 	}
 

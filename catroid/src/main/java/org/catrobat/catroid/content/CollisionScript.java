@@ -53,8 +53,7 @@ public class CollisionScript extends BroadcastScript {
 	}
 
 	public CollisionEventIdentifier getEventIdentifier() {
-		return new CollisionEventIdentifier(ProjectManager.getInstance().getCurrentSprite(), spriteToCollideWith, ProjectManager
-				.getInstance().getCurrentScene());
+		return new CollisionEventIdentifier(ProjectManager.getInstance().getCurrentSprite(), spriteToCollideWith);
 	}
 
 	public void setSpriteToCollideWith(Sprite spriteToCollideWith) {

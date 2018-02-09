@@ -177,6 +177,7 @@ public class StageDialog extends Dialog implements View.OnClickListener {
 	}
 
 	private void clearBroadcastMaps() {
+		// BC-TODO: Not done for all scenes...
 		for (Sprite sprite : stageListener.getSpritesFromStage()) {
 			sprite.getBroadcastSequenceActionMap().clear();
 		}

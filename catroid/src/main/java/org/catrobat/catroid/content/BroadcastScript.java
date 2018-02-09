@@ -48,7 +48,6 @@ public class BroadcastScript extends Script implements BroadcastMessage {
 	@Override
 	protected Object readResolve() {
 		MessageContainer.addMessage(getBroadcastMessage(), this);
-		super.readResolve();
 		return this;
 	}
 
