@@ -260,7 +260,7 @@ public class Sprite implements Serializable, Cloneable {
 
 	private void initializeActionByBroadcastScript(BroadcastScript broadcastScript) {
 		EventIdentifier identifier = new BroadcastEventIdentifier(broadcastScript.getBroadcastMessage(),
-				ProjectManager.getInstance().getSceneToPlay(), BroadcastEventType.RASPI);
+				ProjectManager.getInstance().getSceneToPlay(), BroadcastEventType.DEFAULT);
 		broadcastSequenceActionMap.put(identifier, createBroadcastActionSequence(broadcastScript));
 	}
 
