@@ -182,6 +182,10 @@ public class Sprite implements Serializable, Cloneable {
 		penConfiguration = new PenConfiguration();
 	}
 
+	public void removeSprite() {
+		broadcastSequenceActionMap = null;
+	}
+
 	public void removeUserBrick(UserBrick brickToRemove) {
 		for (UserBrick userBrick : userBricks) {
 			userBrick.getDefinitionBrick().getUserScript().removeInstancesOfUserBrick(brickToRemove);

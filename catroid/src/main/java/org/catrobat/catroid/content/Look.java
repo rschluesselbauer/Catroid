@@ -107,7 +107,7 @@ public class Look extends Image {
 			public void handleBroadcastEvent(BroadcastEvent event) {
 				Sprite handlingSprite = Look.this.sprite;
 
-				Collection<BroadcastSequenceAction> sequenceActions = handlingSprite.getBroadcastSequenceActionMap().get(event.getEventIdentifier());
+				Collection<BroadcastSequenceAction> sequenceActions = handlingSprite.getBroadcastSequenceActionMap().get(event.getIdentifier());
 				for (BroadcastSequenceAction actionToBeAdded : sequenceActions) {
 					if (event.waitForCompletion()) {
 						event.addInterrupter(handlingSprite);
@@ -158,6 +158,14 @@ public class Look extends Image {
 
 	static void actionsToRestartAdd(Action action) {
 		Look.actionsToRestart.add(action);
+	}
+
+	@Override
+	public boolean remove() {
+		boolean returnValue = super.remove();
+		this.sprite = null;
+		this.lookData = null;
+		return returnValue;
 	}
 
 	public void copyTo(final Look destination) {

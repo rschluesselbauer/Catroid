@@ -286,6 +286,7 @@ public class StageListener implements ApplicationListener {
 		}
 		sprite.look.setLookVisible(false);
 		sprite.look.remove();
+		sprite.removeSprite();
 		return sprites.remove(sprite);
 	}
 
