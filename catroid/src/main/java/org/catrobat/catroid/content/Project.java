@@ -52,6 +52,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @XStreamAlias("program")
 // Remove checkstyle disable when https://github.com/checkstyle/checkstyle/issues/1349 is fixed
@@ -77,6 +79,8 @@ public class Project implements Serializable {
 	private List<UserList> projectLists = new ArrayList<>();
 	@XStreamAlias("scenes")
 	private List<Scene> sceneList = new ArrayList<>();
+
+	private transient Set<String> broadcastMessages = new TreeSet<>();
 
 	public Project(Context context, String name, boolean landscapeMode, boolean isCastProject) {
 
@@ -498,10 +502,11 @@ public class Project implements Serializable {
 	}
 
 	public synchronized void updateMessageContainer() {
-		List<String> usedMessages = new ArrayList<>();
+		broadcastMessages.clear();
 		for (Scene scene : getSceneList()) {
-			scene.addUsedMessagesToList(usedMessages);
+			scene.addUsedMessagesToSet(broadcastMessages);
 		}
-		MessageContainer.removeUnusedMessages(usedMessages);
+		// BC-TODO: replace message container
+		// MessageContainer.removeUnusedMessages(usedMessages);
 	}
 }

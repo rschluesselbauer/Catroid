@@ -47,7 +47,6 @@ public class CollisionScript extends BroadcastScript {
 	@Override
 	public Script copyScriptForSprite(Sprite copySprite) {
 		CollisionScript cloneScript = new CollisionScript(spriteToCollideWith);
-
 		doCopy(copySprite, cloneScript);
 		return cloneScript;
 	}

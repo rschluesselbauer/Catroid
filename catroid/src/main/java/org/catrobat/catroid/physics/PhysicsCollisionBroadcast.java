@@ -66,6 +66,9 @@ public class PhysicsCollisionBroadcast {
 	}
 
 	public static void fireEvent(Sprite sprite1, Sprite sprite2) {
+		if (sprite1 == null && sprite2 == null) {
+			return;
+		}
 		BroadcastEvent event = new BroadcastEvent(false);
 		CollisionEventIdentifier identifier = new CollisionEventIdentifier(sprite1, sprite2);
 		event.setIdentifier(identifier);

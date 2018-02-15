@@ -95,6 +95,13 @@ public class BroadcastBrick extends BrickBaseType implements BroadcastMessage {
 		final Spinner broadcastSpinner = (Spinner) view.findViewById(R.id.brick_broadcast_spinner);
 
 		broadcastSpinner.setAdapter(MessageContainer.getMessageAdapter(context));
+		setOnItemSelectedListener(broadcastSpinner, context);
+
+		setSpinnerSelection(broadcastSpinner);
+		return view;
+	}
+
+	protected void setOnItemSelectedListener(final Spinner broadcastSpinner, final Context context) {
 		broadcastSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -111,9 +118,6 @@ public class BroadcastBrick extends BrickBaseType implements BroadcastMessage {
 			public void onNothingSelected(AdapterView<?> parent) {
 			}
 		});
-
-		setSpinnerSelection(broadcastSpinner);
-		return view;
 	}
 
 	@Override
