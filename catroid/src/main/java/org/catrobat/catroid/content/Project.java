@@ -30,7 +30,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
-import org.catrobat.catroid.common.MessageContainer;
 import org.catrobat.catroid.common.ScreenModes;
 import org.catrobat.catroid.common.ScreenValues;
 import org.catrobat.catroid.content.bricks.Brick;
@@ -80,7 +79,7 @@ public class Project implements Serializable {
 	@XStreamAlias("scenes")
 	private List<Scene> sceneList = new ArrayList<>();
 
-	private transient Set<String> broadcastMessages = new TreeSet<>();
+	private static transient Set<String> broadcastMessages = new TreeSet<>();
 
 	public Project(Context context, String name, boolean landscapeMode, boolean isCastProject) {
 
@@ -105,7 +104,6 @@ public class Project implements Serializable {
 			setChromecastFields();
 		}
 
-		MessageContainer.clear();
 		//This is used for tests
 		if (context == null) {
 			//Because in test project we can't find the string
@@ -501,6 +499,12 @@ public class Project implements Serializable {
 		}
 	}
 
+	public static void addBroadcastMessage(String message) {
+		if (message != null) {
+			broadcastMessages.add(message);
+		}
+	}
+
 	public synchronized void updateMessageContainer() {
 		broadcastMessages.clear();
 		for (Scene scene : getSceneList()) {
@@ -508,5 +512,9 @@ public class Project implements Serializable {
 		}
 		// BC-TODO: replace message container
 		// MessageContainer.removeUnusedMessages(usedMessages);
+	}
+
+	public Set<String> getBroadcastMessages() {
+		return broadcastMessages;
 	}
 }

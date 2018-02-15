@@ -31,7 +31,6 @@ import android.widget.SpinnerAdapter;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.R;
-import org.catrobat.catroid.common.MessageContainer;
 import org.catrobat.catroid.content.BroadcastMessage;
 import org.catrobat.catroid.content.Sprite;
 
@@ -66,10 +65,9 @@ public class BroadcastWaitBrick extends BroadcastBrick implements BroadcastMessa
 		view = View.inflate(context, R.layout.brick_broadcast_wait, null);
 		view = BrickViewProvider.setAlphaOnView(view, alphaValue);
 		setCheckboxView(R.id.brick_broadcast_wait_checkbox);
-
 		final Spinner broadcastSpinner = (Spinner) view.findViewById(R.id.brick_broadcast_wait_spinner);
 
-		broadcastSpinner.setAdapter(MessageContainer.getMessageAdapter(context));
+		broadcastSpinner.setAdapter(getMessageAdapter(context));
 		setOnItemSelectedListener(broadcastSpinner, context);
 
 		setSpinnerSelection(broadcastSpinner);
@@ -81,7 +79,7 @@ public class BroadcastWaitBrick extends BroadcastBrick implements BroadcastMessa
 		View prototypeView = View.inflate(context, R.layout.brick_broadcast_wait, null);
 		Spinner broadcastWaitSpinner = (Spinner) prototypeView.findViewById(R.id.brick_broadcast_wait_spinner);
 
-		SpinnerAdapter broadcastWaitSpinnerAdapter = MessageContainer.getMessageAdapter(context);
+		SpinnerAdapter broadcastWaitSpinnerAdapter = getMessageAdapter(context);
 		broadcastWaitSpinner.setAdapter(broadcastWaitSpinnerAdapter);
 		setSpinnerSelection(broadcastWaitSpinner);
 		return prototypeView;
