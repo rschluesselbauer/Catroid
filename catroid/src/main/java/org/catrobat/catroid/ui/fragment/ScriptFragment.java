@@ -306,6 +306,7 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		super.onStart();
 		BottomBar.showBottomBar(getActivity());
 		initListeners();
+		ProjectManager.getInstance().getCurrentProject().updateMessageContainer(getActivity().getApplicationContext());
 	}
 
 	@Override
@@ -349,7 +350,6 @@ public class ScriptFragment extends ScriptActivityFragment implements OnCategory
 		}
 		if (projectManager.getCurrentScene() != null) {
 			projectManager.saveProject(getActivity().getApplicationContext());
-			projectManager.getCurrentProject().updateMessageContainer(); // TODO: Find better place
 		}
 	}
 

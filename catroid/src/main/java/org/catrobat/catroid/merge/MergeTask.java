@@ -178,7 +178,7 @@ public class MergeTask {
 		}
 
 		mergedProject.addScene(mergeResult);
-		mergedProject.updateMessageContainer();
+		mergedProject.updateMessageContainer(context);
 		try {
 			StorageHandler.getInstance().copyImageFiles(mergeResult.getName(), mergeResult.getProject().getName(), firstScene.getName(), firstScene.getProject().getName());
 			StorageHandler.getInstance().copySoundFiles(mergeResult.getName(), mergeResult.getProject().getName(), firstScene.getName(), firstScene.getProject().getName());
