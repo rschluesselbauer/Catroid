@@ -107,7 +107,7 @@ public class Look extends Image {
 			public void handleBroadcastEvent(BroadcastEvent event) {
 				Sprite handlingSprite = Look.this.sprite;
 
-				Collection<BroadcastSequenceAction> sequenceActions = handlingSprite.getBroadcastSequenceActionMap().get(event.getIdentifier());
+				Collection<BroadcastSequenceAction> sequenceActions = handlingSprite.getBroadcastSequenceActionMap().get(event.getEventId());
 				for (BroadcastSequenceAction actionToBeAdded : sequenceActions) {
 					if (event.waitForCompletion()) {
 						event.addInterrupter(handlingSprite);

@@ -72,6 +72,7 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 
 	@Override
 	public Brick clone() {
+		// BC-TODO: is this necessary?
 		try {
 			super.clone();
 		} catch (CloneNotSupportedException e) {
@@ -85,7 +86,7 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 		return PHYSICS;
 	}
 
-	public Sprite getSpriteToCollideWith() {
+	private Sprite getSpriteToCollideWith() {
 		return collisionScript == null ? null : collisionScript.getSpriteToCollideWith();
 	}
 
@@ -192,16 +193,16 @@ public class CollisionReceiverBrick extends BrickBaseType implements ScriptBrick
 		return ANYTHING_ESCAPE_CHAR + context.getString(R.string.collision_with_anything) + ANYTHING_ESCAPE_CHAR;
 	}
 
-	@Override
-	public void setCommentedOut(boolean commentedOut) {
-		super.setCommentedOut(commentedOut);
-		getScriptSafe().setCommentedOut(commentedOut);
-	}
-
 	public String getBroadcastMessage() {
 		if (collisionScript == null || collisionScript.getSpriteToCollideWith() == null) {
 			return null;
 		}
 		return collisionScript.getSpriteToCollideWith().getName();
+	}
+
+	@Override
+	public void setCommentedOut(boolean commentedOut) {
+		super.setCommentedOut(commentedOut);
+		getScriptSafe().setCommentedOut(commentedOut);
 	}
 }
