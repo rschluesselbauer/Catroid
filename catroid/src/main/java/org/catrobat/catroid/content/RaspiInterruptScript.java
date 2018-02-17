@@ -22,7 +22,6 @@
  */
 package org.catrobat.catroid.content;
 
-import org.catrobat.catroid.content.bricks.Brick;
 import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.WhenRaspiPinChangedBrick;
 
@@ -66,10 +65,5 @@ public class RaspiInterruptScript extends Script {
 		RaspiInterruptScript cloneScript = new RaspiInterruptScript(pin, eventValue);
 		doCopy(copySprite, cloneScript);
 		return cloneScript;
-	}
-
-	@Override
-	public int getRequiredResources() {
-		return super.getRequiredResources() | Brick.SOCKET_RASPI;
 	}
 }

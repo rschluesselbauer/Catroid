@@ -211,6 +211,11 @@ public class WhenRaspiPinChangedBrick extends BrickBaseType implements ScriptBri
 	}
 
 	@Override
+	public int getRequiredResources() {
+		return Brick.SOCKET_RASPI;
+	}
+
+	@Override
 	public List<SequenceAction> addActionToSequence(Sprite sprite, SequenceAction sequence) {
 		return null;
 	}
