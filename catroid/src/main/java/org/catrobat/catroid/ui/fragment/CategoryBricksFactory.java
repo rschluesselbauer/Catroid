@@ -30,6 +30,7 @@ import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.BrickValues;
 import org.catrobat.catroid.content.BroadcastScript;
+import org.catrobat.catroid.content.CollisionScript;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.WhenGamepadButtonScript;
 import org.catrobat.catroid.content.bricks.AddItemToUserListBrick;
@@ -259,7 +260,7 @@ public class CategoryBricksFactory {
 		eventBrickList.add(new BroadcastBrick(broadcastMessage));
 		eventBrickList.add(new BroadcastWaitBrick(broadcastMessage));
 		eventBrickList.add(new WhenConditionBrick(new Formula(defaultIf)));
-		eventBrickList.add(new CollisionReceiverBrick(null));
+		eventBrickList.add(new CollisionReceiverBrick(new CollisionScript(null)));
 		eventBrickList.add(new WhenBackgroundChangesBrick());
 		eventBrickList.add(new WhenClonedBrick());
 

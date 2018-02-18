@@ -182,7 +182,7 @@ public class Sprite implements Serializable, Cloneable {
 		penConfiguration = new PenConfiguration();
 	}
 
-	public void removeSprite() {
+	public void remove() {
 		broadcastSequenceActionMap = null;
 	}
 
