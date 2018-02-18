@@ -714,8 +714,6 @@ public class BackwardCompatibleCatrobatLanguageXStream extends XStream {
 		Document originalDocument = getDocument(file);
 		if (originalDocument != null) {
 			updateLegoNXTFields(originalDocument);
-			updateRaspiScripts(originalDocument);
-			updateCollisionSpriteReference(originalDocument);
 
 			convertChildNodeToAttribute(originalDocument, "lookList", "name");
 			convertChildNodeToAttribute(originalDocument, "object", "name");
@@ -725,6 +723,8 @@ public class BackwardCompatibleCatrobatLanguageXStream extends XStream {
 			deleteChildNodeByName(originalDocument.getElementsByTagName("header").item(0), "isPhiroProProject");
 			deleteChildNodeByName(originalDocument, "brickList", "inUserBrick");
 
+			updateRaspiScripts(originalDocument);
+			updateCollisionSpriteReference(originalDocument);
 			modifyScriptLists(originalDocument);
 			modifyBrickLists(originalDocument);
 			modifyVariables(originalDocument);
