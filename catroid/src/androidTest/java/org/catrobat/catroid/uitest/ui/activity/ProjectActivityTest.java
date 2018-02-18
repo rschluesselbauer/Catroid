@@ -1349,8 +1349,8 @@ public class ProjectActivityTest extends BaseActivityInstrumentationTestCase<Mai
 	private void checkSpecialBricks(Sprite firstSprite, Sprite copiedSprite) {
 
 		assertEquals("Message of BroadcastReceiver Brick is not right!",
-				((BroadcastScript) (firstSprite.getScript(1))).getBroadcastMessage(),
-				((BroadcastScript) (copiedSprite.getScript(1))).getBroadcastMessage());
+				((BroadcastScript) (firstSprite.getScript(1))).getReceivedMessage(),
+				((BroadcastScript) (copiedSprite.getScript(1))).getReceivedMessage());
 
 		ArrayList<Brick> brickListFirstSprite = firstSprite.getScript(0).getBrickList();
 		ArrayList<Brick> brickListCopiedSprite = copiedSprite.getScript(0).getBrickList();

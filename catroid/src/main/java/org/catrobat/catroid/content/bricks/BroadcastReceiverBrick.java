@@ -68,7 +68,7 @@ public class BroadcastReceiverBrick extends BrickBaseType implements ScriptBrick
 
 	@Override
 	public Brick clone() {
-		BroadcastScript broadcastScript = new BroadcastScript(getBroadcastMessage());
+		BroadcastScript broadcastScript = new BroadcastScript(getReceivedMessage());
 		broadcastScript.setCommentedOut(broadcastScript.isCommentedOut());
 		return new BroadcastReceiverBrick(broadcastScript);
 	}
@@ -78,9 +78,8 @@ public class BroadcastReceiverBrick extends BrickBaseType implements ScriptBrick
 		return NO_RESOURCES;
 	}
 
-	@Override
-	public String getBroadcastMessage() {
-		return broadcastScript.getBroadcastMessage();
+	public String getReceivedMessage() {
+		return broadcastScript.getReceivedMessage();
 	}
 
 	@Override
@@ -106,7 +105,7 @@ public class BroadcastReceiverBrick extends BrickBaseType implements ScriptBrick
 				if (selectedMessage.equals(context.getString(R.string.new_broadcast_message))) {
 					showNewMessageDialog(broadcastSpinner);
 				} else {
-					broadcastScript.setBroadcastMessage(selectedMessage);
+					broadcastScript.setReceivedMessage(selectedMessage);
 				}
 			}
 
@@ -143,7 +142,7 @@ public class BroadcastReceiverBrick extends BrickBaseType implements ScriptBrick
 	}
 
 	private void setSpinnerSelection(Spinner spinner) {
-		int position = getMessageAdapter(spinner.getContext()).getPosition(getBroadcastMessage());
+		int position = getMessageAdapter(spinner.getContext()).getPosition(getReceivedMessage());
 		spinner.setSelection(position, true);
 	}
 
@@ -164,7 +163,7 @@ public class BroadcastReceiverBrick extends BrickBaseType implements ScriptBrick
 					input.setError(getString(R.string.brick_broadcast_invalid_symbol));
 					return false;
 				}
-				broadcastScript.setBroadcastMessage(newMessage);
+				broadcastScript.setReceivedMessage(newMessage);
 				ProjectManager.getInstance().getCurrentProject().addBroadcastMessage(newMessage);
 				setSpinnerSelection(spinner);
 				return true;
