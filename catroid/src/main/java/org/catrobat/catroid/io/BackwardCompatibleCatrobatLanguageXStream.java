@@ -712,7 +712,6 @@ public class BackwardCompatibleCatrobatLanguageXStream extends XStream {
 		Document originalDocument = getDocument(file);
 		if (originalDocument != null) {
 			updateLegoNXTFields(originalDocument);
-
 			convertChildNodeToAttribute(originalDocument, "lookList", "name");
 			convertChildNodeToAttribute(originalDocument, "object", "name");
 
@@ -724,10 +723,32 @@ public class BackwardCompatibleCatrobatLanguageXStream extends XStream {
 			modifyScriptLists(originalDocument);
 			modifyBrickLists(originalDocument);
 			modifyVariables(originalDocument);
+
+			updateBroadcastScripts(originalDocument);
 			checkReferences(originalDocument.getDocumentElement());
 
 			saveDocument(originalDocument, file);
 		}
+	}
+
+	private void updateBroadcastScripts(Document originalDocument) {
+		String raspiInterruptTag = "RaspiInterruptScript";
+		NodeList scripts = originalDocument.getElementsByTagName("script");
+		for (int i = 0; i < scripts.getLength(); i++) {
+			Node script = scripts.item(i);
+			NamedNodeMap attributes = script.getAttributes();
+			if (attributes != null) {
+				for (int j = 0; j < attributes.getLength(); j++) {
+					if (attributes.item(j).getNodeValue().equals(raspiInterruptTag)) {
+						updateRaspiInterruptScript(script);
+					}
+				}
+			}
+		}
+	}
+
+	private void updateRaspiInterruptScript(Node node) {
+		deleteChildNodeByName(node, "receivedMessage");
 	}
 
 	private void updateLegoNXTFields(Document originalDocument) {
