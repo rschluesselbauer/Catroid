@@ -26,7 +26,6 @@ import org.catrobat.catroid.content.bricks.ScriptBrick;
 import org.catrobat.catroid.content.bricks.WhenRaspiPinChangedBrick;
 
 public class RaspiInterruptScript extends Script {
-	// BC-TODO: Test
 	private static final long serialVersionUID = 1L;
 	private String pin;
 	private String eventValue;

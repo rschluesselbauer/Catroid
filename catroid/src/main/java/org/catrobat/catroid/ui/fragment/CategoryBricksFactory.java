@@ -31,6 +31,7 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.BrickValues;
 import org.catrobat.catroid.content.BroadcastScript;
 import org.catrobat.catroid.content.CollisionScript;
+import org.catrobat.catroid.content.RaspiInterruptScript;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.WhenGamepadButtonScript;
 import org.catrobat.catroid.content.bricks.AddItemToUserListBrick;
@@ -577,8 +578,9 @@ public class CategoryBricksFactory {
 	}
 
 	private List<Brick> setupRaspiCategoryList() {
+		RaspiInterruptScript defaultScript = new RaspiInterruptScript(Integer.toString(BrickValues.RASPI_DIGITAL_INITIAL_PIN_NUMBER), BrickValues.RASPI_PRESSED_EVENT);
 		List<Brick> raspiBrickList = new ArrayList<>();
-		raspiBrickList.add(new WhenRaspiPinChangedBrick(null));
+		raspiBrickList.add(new WhenRaspiPinChangedBrick(defaultScript));
 		raspiBrickList.add(new RaspiIfLogicBeginBrick(BrickValues.RASPI_DIGITAL_INITIAL_PIN_NUMBER));
 		raspiBrickList.add(new RaspiSendDigitalValueBrick(BrickValues.RASPI_DIGITAL_INITIAL_PIN_NUMBER, BrickValues.RASPI_DIGITAL_INITIAL_PIN_VALUE));
 		raspiBrickList.add(new RaspiPwmBrick(BrickValues.RASPI_DIGITAL_INITIAL_PIN_NUMBER, BrickValues
