@@ -25,12 +25,12 @@ package org.catrobat.catroid.test.content.actions;
 import android.test.InstrumentationTestCase;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.SingleSprite;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.StartScript;
+import org.catrobat.catroid.content.actions.EventThread;
 import org.catrobat.catroid.content.actions.RepeatAction;
 import org.catrobat.catroid.content.bricks.ChangeYByNBrick;
 import org.catrobat.catroid.content.bricks.LoopEndBrick;
@@ -84,7 +84,7 @@ public class RepeatActionTest extends InstrumentationTestCase {
 				(int) testSprite.look.getYInUserInterfaceDimensionUnit());
 	}
 
-	public void testRepeatBrick() throws InterruptedException {
+	public void testRepeatBrick() {
 
 		RepeatBrick repeatBrick = new RepeatBrick(REPEAT_TIMES);
 		LoopEndBrick loopEndBrick = new LoopEndBrick(repeatBrick);
@@ -168,11 +168,11 @@ public class RepeatActionTest extends InstrumentationTestCase {
 				(int) testSprite.look.getYInUserInterfaceDimensionUnit());
 	}
 
-	public void testNegativeRepeats() throws InterruptedException {
+	public void testNegativeRepeats() {
 		Sprite testSprite = new SingleSprite("sprite");
 		RepeatBrick repeatBrick = new RepeatBrick(-1);
 
-		SequenceAction sequence = (SequenceAction) testSprite.getActionFactory().createSequence();
+		EventThread sequence = (EventThread) testSprite.getActionFactory().createEventThread(new StartScript());
 		repeatBrick.addActionToSequence(testSprite, sequence);
 
 		RepeatAction repeatAction = (RepeatAction) sequence.getActions().get(0);
@@ -185,7 +185,7 @@ public class RepeatActionTest extends InstrumentationTestCase {
 		assertEquals("Executed the wrong number of times!", 0, executedCount);
 	}
 
-	public void testZeroRepeats() throws InterruptedException {
+	public void testZeroRepeats() {
 		final float decoyDeltaY = -150f;
 		final float expectedDeltaY = 150f;
 

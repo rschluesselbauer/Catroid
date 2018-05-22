@@ -25,7 +25,6 @@ package org.catrobat.catroid.test.common;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import junit.framework.Assert;
@@ -34,7 +33,7 @@ import org.catrobat.catroid.common.ActionScheduler;
 import org.catrobat.catroid.content.Look;
 import org.catrobat.catroid.content.Script;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.content.actions.EventSequenceAction;
+import org.catrobat.catroid.content.actions.EventThread;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,128 +48,114 @@ import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 public class ActionSchedulerTest {
 	private ActionScheduler scheduler;
-	private Action actionMock;
+	private EventThread threadMock;
 	private Actor actor;
 
 	@Before
 	public void setUp() {
 		actor = new Look(new Sprite());
 		scheduler = new ActionScheduler(actor);
-		actionMock = mock(Action.class);
-		when(actionMock.act(anyFloat())).thenReturn(false);
+		threadMock = mock(EventThread.class);
+		when(threadMock.act(anyFloat())).thenReturn(false);
 	}
 
 	@Test
-	public void startActionTest() {
-		when(actionMock.act(anyFloat())).thenReturn(false);
+	public void startThreadTest() {
+		when(threadMock.act(anyFloat())).thenReturn(false);
 
-		scheduler.startAction(actionMock);
+		scheduler.startThread(threadMock);
 		scheduler.tick(1);
 
 		Assert.assertEquals("Unexpected number of actions in scheduler", 1, actor.getActions().size);
-		Assert.assertEquals("Invalid action in scheduler", actionMock, actor.getActions().get(0));
+		Assert.assertEquals("Invalid action in scheduler", threadMock, actor.getActions().get(0));
 	}
 
 	@Test
-	public void executeActionOnceTest() {
-		when(actionMock.act(anyFloat())).thenReturn(true);
-		actor.addAction(actionMock);
+	public void executeThreadOnceTest() {
+		when(threadMock.act(anyFloat())).thenReturn(true);
+		actor.addAction(threadMock);
 
 		scheduler.tick(1);
 		scheduler.tick(1);
 		scheduler.tick(1);
 
-		verify(actionMock, times(1)).act(anyFloat());
+		verify(threadMock, times(1)).act(anyFloat());
 	}
 
 	@Test
-	public void executeActionContinuouslyTest() {
-		when(actionMock.act(anyFloat())).thenReturn(false);
-		actor.addAction(actionMock);
+	public void executeThreadContinuously() {
+		when(threadMock.act(anyFloat())).thenReturn(false);
+		actor.addAction(threadMock);
 
 		scheduler.tick(1);
 		scheduler.tick(1);
 		scheduler.tick(1);
 
-		verify(actionMock, times(3)).act(anyFloat());
+		verify(threadMock, times(3)).act(anyFloat());
 	}
 
 	@Test
-	public void stopRunningActionTest() {
+	public void executeMultipleThreadsWithSameScript() {
 		Script scriptMock = mock(Script.class);
-		EventSequenceAction eventSequenceActionMock = createEventSequenceActionWithScript(scriptMock);
-		actor.addAction(eventSequenceActionMock);
+		EventThread thread1 = createEventThread(scriptMock);
+		EventThread thread2 = createEventThread(scriptMock);
+		scheduler.startThread(thread1);
+		scheduler.startThread(thread2);
+
+		scheduler.tick(1);
+
+		// thread1 is thrown out when another thread with the same script is started
+		verify(thread1, times(0)).act(anyFloat());
+		verify(thread2, times(1)).act(anyFloat());
+	}
+
+	@Test
+	public void stopRunningThreadTest() {
+		Script scriptMock = mock(Script.class);
+		EventThread thread = createEventThread(scriptMock);
+		actor.addAction(thread);
 
 		scheduler.tick(1);
 		scheduler.stopActionsWithScript(scriptMock);
 		scheduler.tick(1);
 		scheduler.tick(1);
 
-		verify(eventSequenceActionMock, times(2)).act(anyFloat());
+		verify(thread, times(2)).act(anyFloat());
 	}
 
 	@Test
-	public void stopStartedActionTest() {
+	public void stopStartingThreadTest() {
 		Script scriptMock = mock(Script.class);
-		EventSequenceAction eventSequenceAction = createEventSequenceActionWithScript(scriptMock);
+		EventThread thread = createEventThread(scriptMock);
 
-		scheduler.startAction(eventSequenceAction);
+		scheduler.startThread(thread);
 		scheduler.stopActionsWithScript(scriptMock);
 		scheduler.tick(1);
 
-		verify(eventSequenceAction, times(0)).act(anyFloat());
+		verify(thread, times(1)).act(anyFloat());
 	}
 
 	@Test
-	public void keepActionRunningWhenOtherIsStoppedTest() {
+	public void keepThreadRunningWhenOtherIsStoppedTest() {
 		Script scriptMock = mock(Script.class);
-		EventSequenceAction actionToBeStopped = createEventSequenceActionWithScript(scriptMock);
-		EventSequenceAction actionToKeepRunning = createEventSequenceActionWithScript(mock(Script.class));
-		actor.addAction(actionToBeStopped);
-		actor.addAction(actionToKeepRunning);
+		EventThread threadToBeStopped = createEventThread(scriptMock);
+		EventThread threadThatKeepsRunning = createEventThread(mock(Script.class));
+		actor.addAction(threadToBeStopped);
+		actor.addAction(threadThatKeepsRunning);
 
-		scheduler.stopActionsWithScript(scriptMock);
 		scheduler.tick(1);
-		scheduler.tick(1);
-
-		verify(actionToKeepRunning, times(2)).act(anyFloat());
-	}
-
-	@Test
-	public void stopMultipleStartedActionsTest() {
-		Script scriptMock = mock(Script.class);
-		EventSequenceAction action1 = createEventSequenceActionWithScript(scriptMock);
-		EventSequenceAction action2 = createEventSequenceActionWithScript(scriptMock);
-		scheduler.startAction(action1);
-		scheduler.startAction(action2);
-
-		scheduler.stopActionsWithScript(scriptMock);
-		scheduler.tick(1);
-
-		verify(action1, times(0)).act(anyFloat());
-		verify(action2, times(0)).act(anyFloat());
-	}
-
-	@Test
-	public void stopMultipleRunningActionsTest() {
-		Script scriptMock = mock(Script.class);
-		EventSequenceAction action1 = createEventSequenceActionWithScript(scriptMock);
-		EventSequenceAction action2 = createEventSequenceActionWithScript(scriptMock);
-		actor.addAction(action1);
-		actor.addAction(action2);
-
 		scheduler.stopActionsWithScript(scriptMock);
 		scheduler.tick(1);
 		scheduler.tick(1);
 
-		verify(action1, times(1)).act(anyFloat());
-		verify(action2, times(1)).act(anyFloat());
+		verify(threadThatKeepsRunning, times(3)).act(anyFloat());
+		verify(threadToBeStopped, times(2)).act(anyFloat());
 	}
 
-	private EventSequenceAction createEventSequenceActionWithScript(Script script) {
-		EventSequenceAction eventSequenceActionMock = Mockito.mock(EventSequenceAction.class);
-		when(eventSequenceActionMock.getScript()).thenReturn(script);
-		when(eventSequenceActionMock.act(anyFloat())).thenReturn(false);
-		return eventSequenceActionMock;
+	private EventThread createEventThread(Script script) {
+		EventThread threadMock = Mockito.mock(EventThread.class);
+		when(threadMock.getScript()).thenReturn(script);
+		when(threadMock.act(anyFloat())).thenReturn(false);
+		return threadMock;
 	}
 }

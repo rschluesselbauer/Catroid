@@ -38,11 +38,12 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 
 import org.catrobat.catroid.common.ActionScheduler;
 import org.catrobat.catroid.common.DroneVideoLookData;
 import org.catrobat.catroid.common.LookData;
-import org.catrobat.catroid.content.actions.EventSequenceAction;
+import org.catrobat.catroid.content.actions.EventThread;
 import org.catrobat.catroid.content.eventids.EventId;
 import org.catrobat.catroid.utils.TouchUtil;
 
@@ -190,19 +191,19 @@ public class Look extends Image {
 		}
 	}
 
-	public void startAction(Action action) {
+	public void startThread(EventThread threadToBeStarted) {
 		if (scheduler != null) {
-			scheduler.startAction(action);
+			scheduler.startThread(threadToBeStarted);
 		}
 	}
 
-	public void stopAllActions() {
+	public void stopThreads(Array<Action> actions) {
 		if (scheduler != null) {
-			scheduler.stopAllActions();
+			scheduler.stopActions(actions);
 		}
 	}
 
-	void stopActionWithScript(Script script) {
+	public void stopThreadWithScript(Script script) {
 		if (scheduler != null) {
 			scheduler.stopActionsWithScript(script);
 		}
@@ -636,8 +637,8 @@ public class Look extends Image {
 
 	void notifyAllWaiters() {
 		for (Action action : getActions()) {
-			if (action instanceof EventSequenceAction) {
-				((EventSequenceAction) action).notifyWaiter();
+			if (action instanceof EventThread) {
+				((EventThread) action).notifyWaiter();
 			}
 		}
 	}

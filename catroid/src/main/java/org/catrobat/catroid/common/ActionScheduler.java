@@ -28,7 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 
 import org.catrobat.catroid.content.Script;
-import org.catrobat.catroid.content.actions.EventSequenceAction;
+import org.catrobat.catroid.content.actions.EventThread;
 
 import java.util.Iterator;
 
@@ -69,36 +69,40 @@ public class ActionScheduler {
 	private void removeActionsToBeRemoved(Array<Action> actions) {
 		actions.removeAll(actionsToBeRemoved, true);
 		for (Action action : actionsToBeRemoved) {
-			if (action instanceof EventSequenceAction) {
-				((EventSequenceAction) action).notifyWaiter();
+			if (action instanceof EventThread) {
+				((EventThread) action).notifyWaiter();
 			}
 		}
 		actionsToBeRemoved.clear();
 	}
 
-	public void startAction(Action action) {
-		actionsToBeStarted.add(action);
+	public void startThread(EventThread threadToBeStarted) {
+		removeThreadsWithSameScriptFromActionsToBeStarted(threadToBeStarted);
+		actionsToBeStarted.add(threadToBeStarted);
 	}
 
-	public void stopActionsWithScript(Script script) {
-		for (Action action : actor.getActions()) {
-			if (action instanceof EventSequenceAction && ((EventSequenceAction) action).getScript() == script) {
-				actionsToBeRemoved.add(action);
-			}
-		}
+	private void removeThreadsWithSameScriptFromActionsToBeStarted(EventThread threadToBeStarted) {
 		Iterator<Action> iterator = actionsToBeStarted.iterator();
 		while (iterator.hasNext()) {
 			Action action = iterator.next();
-			if (action instanceof EventSequenceAction && ((EventSequenceAction) action).getScript() == script) {
-				((EventSequenceAction) action).notifyWaiter();
+			if (action instanceof EventThread
+					&& ((EventThread) action).getScript() == threadToBeStarted.getScript()) {
+				((EventThread) action).notifyWaiter();
 				iterator.remove();
 			}
 		}
 	}
 
-	public void stopAllActions() {
-		actionsToBeRemoved.addAll(actor.getActions());
-		actionsToBeStarted.clear();
+	public void stopActionsWithScript(Script script) {
+		for (Action action : actor.getActions()) {
+			if (action instanceof EventThread && ((EventThread) action).getScript() == script) {
+				actionsToBeRemoved.add(action);
+			}
+		}
+	}
+
+	public void stopActions(Array<Action> actions) {
+		actionsToBeRemoved.addAll(actions);
 	}
 
 	public boolean getAllActionsFinished() {
