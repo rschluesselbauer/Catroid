@@ -1148,12 +1148,12 @@ public class ActionFactory extends Actions {
 		switch (spinnerSelection) {
 			case BrickValues.STOP_THIS_SCRIPT:
 				StopThisScriptAction stopThisScriptAction = Actions.action(StopThisScriptAction.class);
-				stopThisScriptAction.setCurrentAction(currentAction);
+				stopThisScriptAction.setCurrentScript(currentAction.getScript());
 				stopThisScriptAction.setCurrentLook(look);
 				return stopThisScriptAction;
 			case BrickValues.STOP_OTHER_SCRIPTS:
 				StopOtherScriptsAction stopOtherScriptsAction = Actions.action(StopOtherScriptsAction.class);
-				stopOtherScriptsAction.setCurrentAction(currentAction);
+				stopOtherScriptsAction.setCurrentScript(currentAction.getScript());
 				stopOtherScriptsAction.setCurrentLook(look);
 				return stopOtherScriptsAction;
 			default:

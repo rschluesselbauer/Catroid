@@ -46,4 +46,11 @@ public class BroadcastEventId extends EventId {
 	public int hashCode() {
 		return (message != null ? message.hashCode() : 0);
 	}
+
+	@Override
+	public String toString() {
+		return "BroadcastEventId{" +
+				"message='" + message + '\'' +
+				'}';
+	}
 }

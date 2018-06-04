@@ -56,4 +56,10 @@ public class WaitAction extends TemporalAction {
 	@Override
 	protected void update(float percent) {
 	}
+
+	@Override
+	public boolean act(float delta) {
+		System.out.println("WaitAction::act: Waiting for " + duration);
+		return super.act(delta);
+	}
 }

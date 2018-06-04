@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import org.catrobat.catroid.content.actions.EventThread;
 import org.catrobat.catroid.content.actions.NotifyEventWaiterAction;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class EventWrapperListener implements EventListener {
@@ -49,6 +50,10 @@ public class EventWrapperListener implements EventListener {
 
 	private void handleEvent(EventWrapper event) {
 		Collection<EventThread> threads = look.sprite.getIdToEventThreadMap().get(event.eventId);
+		System.out.println(EventWrapperListener.class.getSimpleName() + "::handleEvent: idToEventThreadMap: " + look
+				.sprite.getIdToEventThreadMap().toString());
+		System.out.println(EventWrapperListener.class.getSimpleName() + "::handleEvent: eventId: " + event.eventId);
+		System.out.println(EventWrapperListener.class.getSimpleName() + "::handleEvent: threads for event: " + Arrays.toString(threads.toArray()));
 		for (EventThread threadToBeStarted : threads) {
 			if (event.waitMode == EventWrapper.WAIT) {
 				threadToBeStarted = createActionForWaitEvent(event, threadToBeStarted);

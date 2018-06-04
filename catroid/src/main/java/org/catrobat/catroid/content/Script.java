@@ -38,7 +38,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Script implements Serializable {
+public abstract class Script implements Serializable, EventScript {
 
 	private static final long serialVersionUID = 1L;
 

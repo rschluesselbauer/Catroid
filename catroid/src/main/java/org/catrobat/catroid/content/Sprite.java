@@ -231,6 +231,7 @@ public class Sprite implements Serializable, Cloneable {
 	public void initializeActions(@EventId.EventType int startType) {
 		idToEventThreadMap.clear();
 		for (Script script : scriptList) {
+			System.out.println("Sprite::initializeActions: Init for script " + script);
 			createActionAndAddToEventMap(script);
 		}
 		look.fire(new EventWrapper(new EventId(startType), EventWrapper.NO_WAIT));
@@ -240,10 +241,10 @@ public class Sprite implements Serializable, Cloneable {
 		if (script.isCommentedOut()) {
 			return;
 		}
-		if (script instanceof EventScript) {
-			EventScript eventScript = (EventScript) script;
-			idToEventThreadMap.put(eventScript.createEventId(this), createEventThread(script));
-		}
+		EventId id = script.createEventId(this);
+		EventThread thread = createEventThread(script);
+		System.out.println("Sprite::createActionAndAddToEventMap: Put to map " + id + " " + thread);
+		idToEventThreadMap.put(id, thread);
 	}
 
 	public ActionFactory getActionFactory() {

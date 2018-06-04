@@ -24,6 +24,7 @@
 package org.catrobat.catroid.content.actions;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 
@@ -31,6 +32,7 @@ import org.catrobat.catroid.content.ActionFactory;
 import org.catrobat.catroid.content.Script;
 
 public class EventThread extends ScriptSequenceAction {
+	public static final String TAG = EventThread.class.getSimpleName();
 	private NotifyEventWaiterAction notifyAction;
 
 	public EventThread(@NonNull Script script) {
@@ -45,6 +47,8 @@ public class EventThread extends ScriptSequenceAction {
 
 	@Override
 	public boolean act(float delta) {
+		System.out.println(TAG + "::act: Act with script " + script.toString());
+		Log.d(TAG, "act: Act with script " + script);
 		if (super.act(delta)) {
 			notifyWaiter();
 			return true;

@@ -37,7 +37,9 @@ public class EventAction extends Action {
 
 	@Override
 	public boolean act(float delta) {
+		System.out.println(EventAction.class.getSimpleName() + "::act: Evaluate act");
 		if (firstStart) {
+			System.out.println(EventAction.class.getSimpleName() + "::act: Fire event");
 			firstStart = false;
 			for (Sprite spriteOfList : receivingSprites) {
 				spriteOfList.look.fire(event);

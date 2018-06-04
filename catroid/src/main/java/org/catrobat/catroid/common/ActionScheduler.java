@@ -33,7 +33,7 @@ import org.catrobat.catroid.content.actions.EventThread;
 import java.util.Iterator;
 
 public class ActionScheduler {
-
+	public static final String TAG = ActionScheduler.class.getSimpleName();
 	private Array<Action> actionsToBeStarted = new Array<>();
 	private Array<Action> actionsToBeRemoved = new Array<>();
 	private Actor actor;
@@ -53,6 +53,7 @@ public class ActionScheduler {
 		for (Action action : actionsToBeStarted) {
 			action.restart();
 			actor.addAction(action);
+			System.out.println(TAG + "::startActionsToBeStarted: Add thread " + action.toString());
 		}
 		actionsToBeStarted.clear();
 	}
@@ -60,6 +61,7 @@ public class ActionScheduler {
 	private void runActionsForOneTick(Array<Action> actions, float delta) {
 		for (int i = 0; i < actions.size; i++) {
 			Action action = actions.get(i);
+			System.out.println(TAG + "::runActionsForOneTick: Run thread " + action.toString());
 			if (action.act(delta)) {
 				actionsToBeRemoved.add(action);
 			}
@@ -71,6 +73,7 @@ public class ActionScheduler {
 		for (Action action : actionsToBeRemoved) {
 			if (action instanceof EventThread) {
 				((EventThread) action).notifyWaiter();
+				System.out.println(TAG + "::removeActionsToBeRemoved: Remove thread " + action.toString());
 			}
 		}
 		actionsToBeRemoved.clear();

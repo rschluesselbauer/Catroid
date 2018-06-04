@@ -39,6 +39,7 @@ public class ChangeXByNAction extends TemporalAction {
 	protected void update(float percent) {
 		try {
 			Float newX = xMovement == null ? Float.valueOf(0f) : xMovement.interpretFloat(sprite);
+			System.out.println(getClass().getSimpleName() + "::update: ChangeXByN: " + newX);
 			sprite.look.changeXInUserInterfaceDimensionUnit(newX);
 		} catch (InterpretationException interpretationException) {
 			Log.d(getClass().getSimpleName(), "Formula interpretation for this specific Brick failed.", interpretationException);

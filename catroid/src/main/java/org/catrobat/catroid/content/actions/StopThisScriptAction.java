@@ -26,14 +26,15 @@ package org.catrobat.catroid.content.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 
 import org.catrobat.catroid.content.Look;
+import org.catrobat.catroid.content.Script;
 
 public class StopThisScriptAction extends Action {
 
-	private ScriptSequenceAction currentAction;
+	private Script currentScript;
 	private Look currentLook;
 
-	public void setCurrentAction(ScriptSequenceAction currentAction) {
-		this.currentAction = currentAction;
+	public void setCurrentScript(Script currentScript) {
+		this.currentScript = currentScript;
 	}
 
 	public void setCurrentLook(Look currentLook) {
@@ -42,7 +43,7 @@ public class StopThisScriptAction extends Action {
 
 	@Override
 	public boolean act(float delta) {
-		currentLook.stopThreadWithScript(currentAction.getScript());
+		currentLook.stopThreadWithScript(currentScript);
 		return true;
 	}
 }

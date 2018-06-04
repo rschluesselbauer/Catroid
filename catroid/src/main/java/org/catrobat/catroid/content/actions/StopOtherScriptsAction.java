@@ -23,30 +23,35 @@
 
 package org.catrobat.catroid.content.actions;
 
+import android.util.Log;
+
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.utils.Array;
 
 import org.catrobat.catroid.content.Look;
+import org.catrobat.catroid.content.Script;
 
 import java.util.Iterator;
 
 public class StopOtherScriptsAction extends Action {
-
-	private ScriptSequenceAction currentAction;
+	public static final String TAG = StopOtherScriptsAction.class.getSimpleName();
+	private Script currentScript;
 	private Look currentLook;
 
 	@Override
 	public boolean act(float delta) {
+		System.out.println(TAG + "::act: Stop other scripts");
 		if (currentLook == null || currentLook.getActions() == null) {
-			return true;
+			throw new RuntimeException("CurrentLook must be set to a valid look");
 		}
 		Look look = (Look) actor;
-		Array<Action> otherActions = getOtherActions(look);
+		Array<Action> otherActions = getOtherThreads(look);
 		look.stopThreads(otherActions);
+		System.out.println(TAG + "::act: Stopped actions " + otherActions.toString());
 		return true;
 	}
 
-	private Array<Action> getOtherActions(Look look) {
+	private Array<Action> getOtherThreads(Look look) {
 		Array<Action> actions = new Array<>(look.getActions());
 		Iterator<Action> it = actions.iterator();
 		Action action;
@@ -54,15 +59,24 @@ public class StopOtherScriptsAction extends Action {
 		while (it.hasNext()) {
 			action = it.next();
 			if (action instanceof ScriptSequenceAction
-					&& ((ScriptSequenceAction) action).getScript() == currentAction.getScript()) {
+					&& ((ScriptSequenceAction) action).getScript() == currentScript) {
 				it.remove();
+				System.out.println(TAG + "::getOtherThreads: Remove thread with script " + ((ScriptSequenceAction)
+						action).getScript().toString() + " from otherThreads");
+				Log.d(TAG, "getOtherThreads: Remove thread with script " + ((ScriptSequenceAction)
+						action).getScript() + " from otherThreads");
+			} else {
+				System.out.println(TAG + "::getOtherThreads: Add thread with script " + ((ScriptSequenceAction)
+						action).getScript().toString() + " to otherThreads");
+				Log.d(TAG, "getOtherThreads: Add thread with script " + ((ScriptSequenceAction)
+						action).getScript() + " to otherThreads");
 			}
 		}
 		return actions;
 	}
 
-	public void setCurrentAction(ScriptSequenceAction currentAction) {
-		this.currentAction = currentAction;
+	public void setCurrentScript(Script currentScript) {
+		this.currentScript = currentScript;
 	}
 
 	public void setCurrentLook(Look currentLook) {
