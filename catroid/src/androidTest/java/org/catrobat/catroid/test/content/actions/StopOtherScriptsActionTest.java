@@ -40,6 +40,7 @@ import org.catrobat.catroid.content.bricks.ChangeXByNBrick;
 import org.catrobat.catroid.content.bricks.StopScriptBrick;
 import org.catrobat.catroid.content.bricks.WaitBrick;
 import org.catrobat.catroid.content.eventids.EventId;
+import org.catrobat.catroid.stage.StageActivity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,8 +66,12 @@ public class StopOtherScriptsActionTest {
 
 	private Project createProjectWithSprite(Sprite sprite) {
 		Project project = new Project(InstrumentationRegistry.getInstrumentation().getTargetContext(), "testProject");
-		ProjectManager.getInstance().setProject(project);
 		project.getDefaultScene().addSprite(sprite);
+		ProjectManager.getInstance().setProject(project);
+		ProjectManager.getInstance().setCurrentScene(project.getDefaultScene());
+		ProjectManager.getInstance().setCurrentSprite(sprite);
+		ProjectManager.getInstance().setCurrentScript(startScript1);
+		StageActivity.stageListener = null;
 		return project;
 	}
 
