@@ -26,6 +26,7 @@ package org.catrobat.catroid.stage;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -36,16 +37,22 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Disposable;
 
 import org.catrobat.catroid.ProjectManager;
 import org.catrobat.catroid.content.Sprite;
 import org.catrobat.catroid.content.XmlHeader;
 
+import java.util.concurrent.Semaphore;
+
 public class PenActor extends Actor {
+	private static final String TAG = PenActor.class.getSimpleName();
+
 	private FrameBuffer buffer;
 	private Batch bufferBatch;
 	private OrthographicCamera camera;
 	private Float screenRatio;
+	private final Semaphore bufferMutex = new Semaphore(1);
 
 	public PenActor() {
 		XmlHeader header = ProjectManager.getInstance().getCurrentProject().getXmlHeader();
@@ -58,39 +65,63 @@ public class PenActor extends Actor {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		buffer.begin();
-		for (Sprite sprite : ProjectManager.getInstance().getCurrentlyPlayingScene().getSpriteList()) {
-			drawLinesForSprite(sprite);
-		}
-		buffer.end();
+		if (aquireValidBuffers()) {
+			buffer.begin();
+			for (Sprite sprite : ProjectManager.getInstance().getCurrentlyPlayingScene().getSpriteList()) {
+				drawLinesForSprite(sprite);
+			}
+			buffer.end();
 
-		batch.end();
-		TextureRegion region = new TextureRegion(buffer.getColorBufferTexture());
-		region.flip(false, true);
-		Image image = new Image(region);
-		image.setPosition(-buffer.getWidth() / 2, -buffer.getHeight() / 2);
-		batch.begin();
-		image.draw(batch, parentAlpha);
+			batch.end();
+			TextureRegion region = new TextureRegion(buffer.getColorBufferTexture());
+			region.flip(false, true);
+			Image image = new Image(region);
+			image.setPosition(-buffer.getWidth() / 2, -buffer.getHeight() / 2);
+			batch.begin();
+			image.draw(batch, parentAlpha);
+			bufferMutex.release();
+		}
 	}
 
 	public void reset() {
-		XmlHeader header = ProjectManager.getInstance().getCurrentProject().getXmlHeader();
-		buffer.dispose();
-		buffer = new FrameBuffer(Pixmap.Format.RGBA8888, header.virtualScreenWidth, header.virtualScreenHeight, false);
+		if (aquireValidBuffers()) {
+			XmlHeader header = ProjectManager.getInstance().getCurrentProject().getXmlHeader();
+			buffer.dispose();
+			buffer = new FrameBuffer(Pixmap.Format.RGBA8888, header.virtualScreenWidth, header.virtualScreenHeight, false);
+			bufferMutex.release();
+		}
 	}
 
 	public void stampToFrameBuffer() {
-		bufferBatch.begin();
-		buffer.begin();
-		for (Sprite sprite : ProjectManager.getInstance().getCurrentlyPlayingScene().getSpriteList()) {
-			Sprite.PenConfiguration pen = sprite.penConfiguration;
-			if (pen.stamp) {
-				sprite.look.draw(bufferBatch, 1.0f);
-				pen.stamp = false;
+		if (aquireValidBuffers()) {
+			bufferBatch.begin();
+
+			buffer.begin();
+			for (Sprite sprite : ProjectManager.getInstance().getCurrentlyPlayingScene().getSpriteList()) {
+				Sprite.PenConfiguration pen = sprite.penConfiguration;
+				if (pen.stamp) {
+					sprite.look.draw(bufferBatch, 1.0f);
+					pen.stamp = false;
+				}
 			}
+			buffer.end();
+			bufferBatch.end();
+			bufferMutex.release();
 		}
-		buffer.end();
-		bufferBatch.end();
+	}
+
+	private boolean aquireValidBuffers() {
+		try {
+			bufferMutex.acquire();
+			boolean buffersValid = buffer != null & bufferBatch != null;
+			if (!buffersValid) {
+				bufferMutex.release();
+			}
+			return buffersValid;
+		} catch (InterruptedException e) {
+			Log.e(TAG, "Interrupted during aquiring buffer mutex", e);
+			return false;
+		}
 	}
 
 	private void drawLinesForSprite(Sprite sprite) {
@@ -108,7 +139,7 @@ public class PenActor extends Actor {
 		renderer.begin(ShapeRenderer.ShapeType.Filled);
 
 		if (pen.penDown && (pen.previousPoint.x != sprite.look.getX() || pen.previousPoint.y != sprite.look.getY())) {
-			Float penSize = (float) pen.penSize * screenRatio;
+			float penSize = (float) pen.penSize * screenRatio;
 			renderer.circle(pen.previousPoint.x, pen.previousPoint.y, penSize / 2);
 			renderer.rectLine(pen.previousPoint.x, pen.previousPoint.y, x, y, penSize);
 			renderer.circle(x, y, penSize / 2);
@@ -119,14 +150,22 @@ public class PenActor extends Actor {
 		pen.previousPoint.y = y;
 	}
 
-	public void dispose() {
-		if (buffer != null) {
-			buffer.dispose();
+	void dispose() {
+		try {
+			bufferMutex.acquire();
+			disposeSafely(buffer);
 			buffer = null;
-		}
-		if (bufferBatch != null) {
-			bufferBatch.dispose();
+			disposeSafely(bufferBatch);
 			bufferBatch = null;
+			bufferMutex.release();
+		} catch (InterruptedException e) {
+			Log.e(TAG, "Interrupted during dispose", e);
+		}
+	}
+
+	private void disposeSafely(Disposable disposable) {
+		if (disposable != null) {
+			disposable.dispose();
 		}
 	}
 
